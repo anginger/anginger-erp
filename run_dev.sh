@@ -15,7 +15,7 @@
 
 set -e
 
-sh -c "cd api && composer install && cd web && php -S 127.0.0.1:1270 index.php" &
+sh -c "cd api && composer install && php console.php migrate --interactive=0 && cd web && php -S 127.0.0.1:1270 index.php" &
 sh -c "cd web && npm install && npm run serve" &
 
 wait

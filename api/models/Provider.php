@@ -15,19 +15,25 @@
  * limitations under the License.
  */
 
-namespace anginger\controllers;
+namespace anginger\models;
 
-use yii\rest\ActiveController;
+use yii\db\ActiveRecord;
 
-class UsersController extends ActiveController
+/**
+ * Provider model.
+ *
+ * Port of `Slim\Models\Provider` (main branch).
+ *
+ * @property int $_id
+ * @property string $display_name
+ * @property string $contact_name
+ * @property string $contact_phone
+ * @property string $contact_address
+ */
+class Provider extends ActiveRecord
 {
-    public $modelClass = 'anginger\models\User';
-
-    public function behaviors(): array
+    public static function tableName(): string
     {
-        // remove rateLimiter which requires an authenticated user to work
-        $behaviors = parent::behaviors();
-        unset($behaviors['rateLimiter']);
-        return $behaviors;
+        return 'providers';
     }
 }

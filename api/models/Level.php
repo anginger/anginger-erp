@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 
-namespace anginger\controllers;
+namespace anginger\models;
 
-use yii\rest\ActiveController;
+use yii\db\ActiveRecord;
 
-class ItemsController extends ActiveController
+/**
+ * Level model (user permission level).
+ *
+ * Port of `Slim\Models\Level` (main branch).
+ *
+ * @property int $_id
+ * @property string $display_name
+ */
+class Level extends ActiveRecord
 {
-    public $modelClass = 'anginger\models\User';
-
-    public function behaviors(): array
+    public static function tableName(): string
     {
-        // remove rateLimiter which requires an authenticated user to work
-        $behaviors = parent::behaviors();
-        unset($behaviors['rateLimiter']);
-        return $behaviors;
+        return 'levels';
     }
 }
