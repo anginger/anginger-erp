@@ -1,0 +1,102 @@
+<?php
+/**
+ * Copyright 2025 Anginger Platform
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace anginger\models;
+
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
+/**
+ * User model.
+ *
+ * Port of `Slim\Models\User` (main branch). Passwords are stored as
+ * sha256 hashes, exactly like the old implementation.
+ *
+ * @property string $uuid
+ * @property string $username
+ * @property string $password
+ * @property int $level
+ * @property string $display_name
+ * @property int $created_time
+ * @property string $address
+ * @property string $email
+ * @property string $phone
+ */
+class User extends ActiveRecord implements IdentityInterface
+{
+    public static function tableName(): string
+    {
+        return 'users';
+    }
+
+    public static function findIdentity($id): ?IdentityInterface
+    {
+        return static::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null): ?IdentityInterface
+    {
+        // Session-based authentication only, no bearer tokens.
+        return null;
+    }
+
+    public function getId(): string
+    {
+        return $this->uuid;
+    }
+
+    public function getAuthKey(): string
+    {
+        return hash('sha256', $this->uuid . $this->password);
+    }
+
+    public function validateAuthKey($authKey): bool
+    {
+        return $this->getAuthKey() === $authKey;
+    }
+
+    /**
+     * Finds a user by username and plain-text password (port of
+     * `User::loadFromUsernameAndPassword`).
+     */
+    public static function findByUsernameAndPassword(string $username, string $password): ?User
+    {
+        return static::findOne([
+            'username' => $username,
+            'password' => hash('sha256', $password),
+        ]);
+    }
+
+    /**
+     * The password hash must never leak into API responses
+     * (same as the old `jsonSerialize()` which unset `password`).
+     */
+    public function fields(): array
+    {
+        $fields = parent::fields();
+        unset($fields['password']);
+        return $fields;
+    }
+
+    public function beforeSave($insert): bool
+    {
+        if ($insert && empty($this->created_time)) {
+            $this->created_time = time();
+        }
+        return parent::beforeSave($insert);
+    }
+}
