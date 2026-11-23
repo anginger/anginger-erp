@@ -19,18 +19,18 @@
 $this->title = '登入 - Anginger ERP';
 ?>
 <div class="ts-app-center" style="min-height:100vh">
-    <div class="ts-box login-wrap" x-data="loginForm()">
+    <form class="ts-box login-wrap" x-data="loginForm()" @submit.prevent="submit()">
         <h1>Anginger ERP</h1>
         <p class="muted">請登入繼續</p>
-        <p class="error" x-show="message" x-text="message"></p>
+        <p class="error" x-show="message" x-text="message" aria-live="polite"></p>
         <label class="app-field">帳號
-            <div class="ts-input"><input x-model="username" @keyup.enter="submit()" autofocus></div>
+            <div class="ts-input"><input name="username" autocomplete="username" spellcheck="false" x-model="username" autofocus></div>
         </label>
         <label class="app-field">密碼
-            <div class="ts-input"><input type="password" x-model="password" @keyup.enter="submit()"></div>
+            <div class="ts-input"><input type="password" name="password" autocomplete="current-password" x-model="password"></div>
         </label>
-        <button class="ts-button is-fluid" @click="submit()" :disabled="loading">登入</button>
-    </div>
+        <button class="ts-button is-fluid" type="submit" :disabled="loading" x-text="loading ? '登入中…' : '登入'"></button>
+    </form>
 </div>
 <script>
 document.addEventListener('alpine:init', () => {

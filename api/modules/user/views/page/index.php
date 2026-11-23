@@ -54,29 +54,29 @@ UserAsset::register($this);
     </div>
 
     <dialog class="ts-modal" :open="mode !== 0" @click.self="mode = 0">
-        <div class="content">
+        <form class="content" @submit.prevent="submit()">
             <h2 x-text="mode === 1 ? '新增使用者' : '編輯使用者'"></h2>
-            <p class="error" x-show="message" x-text="message"></p>
-            <label class="app-field">帳號<div class="ts-input"><input x-model="form.username"></div></label>
-            <label class="app-field">密碼（留空表示不變）<div class="ts-input"><input type="password" x-model="form.password"></div></label>
+            <p class="error" aria-live="polite" x-show="message" x-text="message"></p>
+            <label class="app-field">帳號<div class="ts-input"><input name="username" autocomplete="off" spellcheck="false" x-model="form.username"></div></label>
+            <label class="app-field">密碼（留空表示不變）<div class="ts-input"><input type="password" name="password" autocomplete="new-password" x-model="form.password"></div></label>
             <label class="app-field">等級
                 <div class="ts-input">
-                    <select x-model="form.level">
+                    <select name="level" x-model="form.level">
                         <template x-for="l in levels" :key="l._id">
                             <option :value="l._id" x-text="l.display_name"></option>
                         </template>
                     </select>
                 </div>
             </label>
-            <label class="app-field">姓名<div class="ts-input"><input x-model="form.display_name"></div></label>
-            <label class="app-field">地址<div class="ts-input"><input x-model="form.address"></div></label>
-            <label class="app-field">Email<div class="ts-input"><input type="email" x-model="form.email"></div></label>
-            <label class="app-field">電話<div class="ts-input"><input x-model="form.phone"></div></label>
+            <label class="app-field">姓名<div class="ts-input"><input name="display_name" autocomplete="off" x-model="form.display_name"></div></label>
+            <label class="app-field">地址<div class="ts-input"><input name="address" autocomplete="off" x-model="form.address"></div></label>
+            <label class="app-field">Email<div class="ts-input"><input type="email" name="email" autocomplete="off" x-model="form.email"></div></label>
+            <label class="app-field">電話<div class="ts-input"><input type="tel" name="phone" autocomplete="off" x-model="form.phone"></div></label>
             <div class="ts-buttons is-end-aligned">
-                <button class="ts-button is-outlined" @click="mode = 0">取消</button>
-                <button class="ts-button" @click="submit()" x-text="mode === 1 ? '送出' : '儲存'"></button>
+                <button class="ts-button is-outlined" type="button" @click="mode = 0">取消</button>
+                <button class="ts-button" type="submit" x-text="mode === 1 ? '送出' : '儲存'"></button>
             </div>
-        </div>
+        </form>
     </dialog>
 </div>
 <script>

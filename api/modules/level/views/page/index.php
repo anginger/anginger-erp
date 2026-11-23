@@ -50,15 +50,15 @@ LevelAsset::register($this);
     </div>
 
     <dialog class="ts-modal" :open="mode !== 0" @click.self="mode = 0">
-        <div class="content">
+        <form class="content" @submit.prevent="submit()">
             <h2 x-text="mode === 1 ? '新增等級' : '編輯等級'"></h2>
-            <p class="error" x-show="message" x-text="message"></p>
-            <label class="app-field">名稱<div class="ts-input"><input x-model="form.display_name"></div></label>
+            <p class="error" aria-live="polite" x-show="message" x-text="message"></p>
+            <label class="app-field">名稱<div class="ts-input"><input name="display_name" autocomplete="off" x-model="form.display_name"></div></label>
             <div class="ts-buttons is-end-aligned">
-                <button class="ts-button is-outlined" @click="mode = 0">取消</button>
-                <button class="ts-button" @click="submit()" x-text="mode === 1 ? '送出' : '儲存'"></button>
+                <button class="ts-button is-outlined" type="button" @click="mode = 0">取消</button>
+                <button class="ts-button" type="submit" x-text="mode === 1 ? '送出' : '儲存'"></button>
             </div>
-        </div>
+        </form>
     </dialog>
 </div>
 <script>window.__ITEMS__ = <?= json_encode($items) ?>;</script>

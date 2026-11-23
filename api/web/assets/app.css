@@ -37,3 +37,20 @@ dialog.ts-modal[open] { display: flex; }
 .empty { text-align: center; color: var(--ts-gray-500); padding: 1.5rem; }
 .page-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 0.5rem; }
 .login-wrap { max-width: 360px; margin: 12vh auto; }
+
+/* a11y & interaction polish */
+a, button, .ts-button, .ts-menu .item { touch-action: manipulation; }
+dialog.ts-modal { overscroll-behavior: contain; }
+.ts-table td, .ts-table th { overflow-wrap: break-word; font-variant-numeric: tabular-nums; }
+h1, h2 { text-wrap: balance; }
+main { scroll-margin-top: 4rem; }
+.skip-link { position: absolute; left: -9999px; top: 0; z-index: 200; background: #fff; color: #111; padding: 0.5rem 1rem; border-radius: 0 0 8px 0; }
+.skip-link:focus-visible { left: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .bubble.typing span { animation: none; }
+  * { scroll-behavior: auto; }
+}
+
+/* TocasUI resets form { display: contents } — restore the modal box when the
+   dialog content is a <form> (so Enter submits) */
+dialog.ts-modal > form.content { display: block; }
