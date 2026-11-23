@@ -15,7 +15,7 @@
 
 set -e
 
+# The frontend is server-rendered PHP + Alpine.js, so only the API/dev server is needed.
 sh -c "cd api && composer install && php console.php migrate --interactive=0 && cd web && php -S 127.0.0.1:1270 index.php" &
-sh -c "cd web && npm install && npm run serve" &
 
 wait

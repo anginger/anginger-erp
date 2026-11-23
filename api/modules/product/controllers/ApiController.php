@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-namespace anginger\controllers;
+namespace anginger\modules\product\controllers;
 
+use anginger\controllers\ResourceController;
 use anginger\models\Product;
 use yii\db\ActiveRecord;
 
 /**
- * Port of `Slim\Controllers\Product` (main branch).
- *
- *   GET    /product?uuid=...  POST /product  PUT /product  DELETE /product?uuid=...  GET /product/all
+ * JSON API for products, mounted under /api/product (see urlManager rules).
  */
-class ProductController extends ResourceController
+class ApiController extends ResourceController
 {
     protected function modelClass(): string
     {

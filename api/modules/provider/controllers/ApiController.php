@@ -15,23 +15,20 @@
  * limitations under the License.
  */
 
-namespace anginger\controllers;
+namespace anginger\modules\provider\controllers;
 
-use anginger\models\Level;
+use anginger\controllers\ResourceController;
+use anginger\models\Provider;
 use yii\db\ActiveRecord;
 
 /**
- * Port of `Slim\Controllers\Level` (main branch).
- *
- *   GET    /level?id=...  POST /level  PUT /level  DELETE /level?id=...  GET /level/all
- *
- * Note: same `uuid` vs `_id` fix as ProviderController — this port uses `id`.
+ * JSON API for providers, mounted under /api/provider.
  */
-class LevelController extends ResourceController
+class ApiController extends ResourceController
 {
     protected function modelClass(): string
     {
-        return Level::class;
+        return Provider::class;
     }
 
     protected function pkParam(): string
@@ -41,24 +38,27 @@ class LevelController extends ResourceController
 
     protected function requiredCreateFields(): array
     {
-        return ['display_name'];
+        return ['display_name', 'contact_name', 'contact_phone', 'contact_address'];
     }
 
     protected function requiredUpdateFields(): array
     {
-        return ['id', 'display_name'];
+        return ['id', 'display_name', 'contact_name', 'contact_phone', 'contact_address'];
     }
 
     protected function fillCreate(array $form): ActiveRecord
     {
-        $level = new Level();
-        $this->fillUpdate($level, $form);
-        return $level;
+        $provider = new Provider();
+        $this->fillUpdate($provider, $form);
+        return $provider;
     }
 
     protected function fillUpdate(ActiveRecord $model, array $form): void
     {
-        /** @var Level $model */
+        /** @var Provider $model */
         $model->display_name = strval($form['display_name']);
+        $model->contact_name = strval($form['contact_name']);
+        $model->contact_phone = strval($form['contact_phone']);
+        $model->contact_address = strval($form['contact_address']);
     }
 }

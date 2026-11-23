@@ -15,23 +15,18 @@
  * limitations under the License.
  */
 
-namespace anginger\controllers;
+namespace anginger\modules\history\controllers;
 
+use anginger\controllers\BaseController;
 use anginger\models\History;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
- * Port of `Slim\Controllers\History` (main branch).
- *
- *   GET /history?id=...  GET /history/all
- *
- * Read-only audit log (written by BaseController::logHistory()).
- * Note: the old getOne read a `uuid` param but loaded by integer `_id`;
- * this port uses `id`, consistent with the table primary key.
+ * Read-only JSON API for the audit log, mounted under /api/history.
  */
-class HistoryController extends BaseController
+class ApiController extends BaseController
 {
     public function behaviors(): array
     {
@@ -64,7 +59,6 @@ class HistoryController extends BaseController
         if (!$this->requireLogin()) {
             return $this->forbidden();
         }
-        // same ordering as the old History::batch(): created_time DESC
         return $this->asJson(History::find()->orderBy(['created_time' => SORT_DESC])->all());
     }
 }

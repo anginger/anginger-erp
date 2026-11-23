@@ -37,9 +37,8 @@ return [
                 'application/json' => 'yii\web\JsonParser',
             ],
         ],
-        'response' => [
-            'format' => yii\web\Response::FORMAT_JSON,
-        ],
+        // NOTE: no global response FORMAT_JSON — pages are server-rendered HTML,
+        // API controllers return JSON explicitly via asJson().
         'user' => [
             'identityClass' => 'anginger\models\User',
             'enableSession' => true,
@@ -50,12 +49,28 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                // allow the docker/nginx setup where the API is mounted under /api/
-                'api/<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                // pages
+                'login' => 'site/login',
+                'logout' => 'site/logout',
+                // every business domain is a module with its own page + JSON API
+                '<module:product|provider|user|level|history>' => '<module>/page/index',
+                // JSON API consumed by the Alpine.js frontend (fetch)
+                'api/authentic/<action:\w+>' => 'authentic/<action>',
+                'api/<module:product|provider|user|level|history>' => '<module>/api/index',
+                'api/<module:product|provider|user|level|history>/<action:\w+>' => '<module>/api/<action>',
             ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+    ],
+    // application-level modules (NOT a component): each business domain
+    // owns its page route and its /api/* JSON API
+    'modules' => [
+        'product' => 'anginger\modules\product\Module',
+        'provider' => 'anginger\modules\provider\Module',
+        'user' => 'anginger\modules\user\Module',
+        'level' => 'anginger\modules\level\Module',
+        'history' => 'anginger\modules\history\Module',
     ],
 ];

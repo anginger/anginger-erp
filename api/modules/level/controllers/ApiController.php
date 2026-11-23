@@ -15,25 +15,20 @@
  * limitations under the License.
  */
 
-namespace anginger\controllers;
+namespace anginger\modules\level\controllers;
 
-use anginger\models\Provider;
+use anginger\controllers\ResourceController;
+use anginger\models\Level;
 use yii\db\ActiveRecord;
 
 /**
- * Port of `Slim\Controllers\Provider` (main branch).
- *
- *   GET    /provider?id=...  POST /provider  PUT /provider  DELETE /provider?id=...  GET /provider/all
- *
- * Note: the old getOne read a `uuid` query param but loaded by the integer
- * `_id` primary key (which always threw a TypeError); the frontend never
- * called it. This port uses `id`, matching the delete/update calls.
+ * JSON API for permission levels, mounted under /api/level.
  */
-class ProviderController extends ResourceController
+class ApiController extends ResourceController
 {
     protected function modelClass(): string
     {
-        return Provider::class;
+        return Level::class;
     }
 
     protected function pkParam(): string
@@ -43,27 +38,24 @@ class ProviderController extends ResourceController
 
     protected function requiredCreateFields(): array
     {
-        return ['display_name', 'contact_name', 'contact_phone', 'contact_address'];
+        return ['display_name'];
     }
 
     protected function requiredUpdateFields(): array
     {
-        return ['id', 'display_name', 'contact_name', 'contact_phone', 'contact_address'];
+        return ['id', 'display_name'];
     }
 
     protected function fillCreate(array $form): ActiveRecord
     {
-        $provider = new Provider();
-        $this->fillUpdate($provider, $form);
-        return $provider;
+        $level = new Level();
+        $this->fillUpdate($level, $form);
+        return $level;
     }
 
     protected function fillUpdate(ActiveRecord $model, array $form): void
     {
-        /** @var Provider $model */
+        /** @var Level $model */
         $model->display_name = strval($form['display_name']);
-        $model->contact_name = strval($form['contact_name']);
-        $model->contact_phone = strval($form['contact_phone']);
-        $model->contact_address = strval($form['contact_address']);
     }
 }

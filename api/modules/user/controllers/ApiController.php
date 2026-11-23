@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
-namespace anginger\controllers;
+namespace anginger\modules\user\controllers;
 
+use anginger\controllers\ResourceController;
 use anginger\models\User;
 use yii\db\ActiveRecord;
 
 /**
- * Port of `Slim\Controllers\User` (main branch).
- *
- *   GET    /user?uuid=...  POST /user  PUT /user  DELETE /user?uuid=...  GET /user/all
+ * JSON API for users, mounted under /api/user.
  */
-class UserController extends ResourceController
+class ApiController extends ResourceController
 {
     protected function modelClass(): string
     {

@@ -17,26 +17,49 @@
 
 namespace anginger\controllers;
 
+use anginger\models\History;
 use Yii;
-use yii\base\Response;
-use yii\web\Controller;
+use yii\web\Response;
 
-class SiteController extends Controller
+/**
+ * Server-rendered pages: overview, login, logout, error.
+ * The JSON API still lives in AuthenticController + the resource modules.
+ */
+class SiteController extends BaseController
 {
-    public function actionIndex(): Response
+    public $layout = '@app/views/layouts/main';
+
+    public function actionIndex(): string|Response
     {
-        return $this->asJson([
-            'description' => 'Anginger ERP',
-            'copyright' => '(c) 2025 Anginger Platform',
-        ]);
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['site/login']);
+        }
+        $histories = History::find()->orderBy(['created_time' => SORT_DESC])->limit(100)->all();
+        return $this->render('index', ['histories' => $histories]);
     }
 
-    public function actionError(): Response
+    public function actionLogin(): string|Response
     {
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(['site/index']);
+        }
+        $this->layout = '@app/views/layouts/blank';
+        return $this->render('login');
+    }
+
+    public function actionLogout(): Response
+    {
+        Yii::$app->user->logout();
+        return $this->redirect(['site/login']);
+    }
+
+    public function actionError(): string
+    {
+        $this->layout = '@app/views/layouts/blank';
         $exception = Yii::$app->errorHandler->exception;
-        return $this->asJson([
-            'description' => 'Anginger Error',
-            'reason' => $exception,
-        ]);
+        if ($exception !== null && method_exists($exception, 'getStatusCode')) {
+            Yii::$app->response->setStatusCode($exception->getStatusCode());
+        }
+        return $this->render('error', ['exception' => $exception ?? new \Exception('unknown error')]);
     }
 }
