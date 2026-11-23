@@ -29,7 +29,7 @@ UserAsset::register($this);
         <h1>使用者管理</h1>
         <button class="ts-button" @click="openCreate()">+ 新增使用者</button>
     </div>
-    <div class="ts-box">
+    <div class="ts-box is-flush">
         <table class="ts-table">
             <thead>
             <tr><th>帳號</th><th>姓名</th><th>等級</th><th>Email</th><th>電話</th><th></th></tr>
@@ -44,7 +44,7 @@ UserAsset::register($this);
                     <td x-text="u.phone"></td>
                     <td>
                         <button class="ts-button is-small is-outlined" @click="openEdit(u)">編輯</button>
-                        <button class="ts-button is-small is-negative" @click="remove(u)">刪除</button>
+                        <button class="ts-button is-small is-negative is-outlined" @click="remove(u)">刪除</button>
                     </td>
                 </tr>
             </template>
@@ -80,6 +80,6 @@ UserAsset::register($this);
     </dialog>
 </div>
 <script>
-    window.__ITEMS__ = <?= json_encode($items) ?>;
-    window.__LEVELS__ = <?= json_encode($levels) ?>;
+    window.__ITEMS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($items)) ?>;
+    window.__LEVELS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($levels)) ?>;
 </script>

@@ -28,7 +28,7 @@ HistoryAsset::register($this);
         <h1>操作紀錄</h1>
         <button class="ts-button is-outlined" @click="load()">重新整理</button>
     </div>
-    <div class="ts-box">
+    <div class="ts-box is-flush">
         <table class="ts-table">
             <thead>
             <tr><th>時間</th><th>使用者</th><th>方法</th><th>資源</th></tr>
@@ -38,7 +38,7 @@ HistoryAsset::register($this);
                 <tr>
                     <td x-text="ts(h.created_time)"></td>
                     <td x-text="h.user"></td>
-                    <td><span class="ts-chip" x-text="h.method"></span></td>
+                    <td><span class="ts-chip" :class="'m-' + (h.method || '').toLowerCase()" x-text="h.method"></span></td>
                     <td x-text="h.resource"></td>
                 </tr>
             </template>
@@ -47,4 +47,4 @@ HistoryAsset::register($this);
         </table>
     </div>
 </div>
-<script>window.__ITEMS__ = <?= json_encode($items) ?>;</script>
+<script>window.__ITEMS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($items)) ?>;</script>

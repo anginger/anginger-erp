@@ -18,19 +18,33 @@
 /* @var $this \yii\web\View */
 $this->title = '登入 - Anginger ERP';
 ?>
-<div class="ts-app-center" style="min-height:100vh">
-    <form class="ts-box login-wrap" x-data="loginForm()" @submit.prevent="submit()">
-        <h1>Anginger ERP</h1>
-        <p class="muted">請登入繼續</p>
-        <p class="error" x-show="message" x-text="message" aria-live="polite"></p>
-        <label class="app-field">帳號
-            <div class="ts-input"><input name="username" autocomplete="username" spellcheck="false" x-model="username" autofocus></div>
-        </label>
-        <label class="app-field">密碼
-            <div class="ts-input"><input type="password" name="password" autocomplete="current-password" x-model="password"></div>
-        </label>
-        <button class="ts-button is-fluid" type="submit" :disabled="loading" x-text="loading ? '登入中…' : '登入'"></button>
-    </form>
+<div class="login-split">
+    <aside class="login-hero">
+        <div class="brand"><span class="brand-mark">A</span><span class="brand-name">Anginger ERP</span></div>
+        <h1>進銷存與供應商，<br>一個後台管好。</h1>
+        <p class="hero-sub">產品、供應商、使用者與權限集中管理，異動全程留痕 —適合臺灣中小企業的輕量 ERP。</p>
+        <ul class="hero-feats">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3.3 8.3 12 13l8.7-4.7"/><path d="M12 22V13"/></svg>產品價格與庫存</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1z"/><path d="M15 9h4l4 4v3h-8V9z"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/></svg>供應商與聯絡資料</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>使用者與權限等級</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg>操作紀錄完整留痕</li>
+        </ul>
+        <p class="hero-foot">Anginger 工作台 · ERP</p>
+    </aside>
+    <div class="login-panel">
+        <form class="login-card" x-data="loginForm()" @submit.prevent="submit()">
+            <h2>登入</h2>
+            <p class="muted">歡迎回來，請輸入帳號密碼。</p>
+            <p class="error" aria-live="polite" x-show="message" x-text="message"></p>
+            <label class="app-field">帳號
+                <span class="ts-input"><input name="username" autocomplete="username" spellcheck="false" x-model="username" autofocus></span>
+            </label>
+            <label class="app-field">密碼
+                <span class="ts-input"><input type="password" name="password" autocomplete="current-password" x-model="password"></span>
+            </label>
+            <button class="ts-button is-fluid" type="submit" :disabled="loading" x-text="loading ? '登入中…' : '登入'"></button>
+        </form>
+    </div>
 </div>
 <script>
 document.addEventListener('alpine:init', () => {

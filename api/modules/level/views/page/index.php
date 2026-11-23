@@ -28,7 +28,7 @@ LevelAsset::register($this);
         <h1>權限等級</h1>
         <button class="ts-button" @click="openCreate()">+ 新增等級</button>
     </div>
-    <div class="ts-box">
+    <div class="ts-box is-flush">
         <table class="ts-table">
             <thead>
             <tr><th>ID</th><th>名稱</th><th></th></tr>
@@ -40,7 +40,7 @@ LevelAsset::register($this);
                     <td x-text="l.display_name"></td>
                     <td>
                         <button class="ts-button is-small is-outlined" @click="openEdit(l)">編輯</button>
-                        <button class="ts-button is-small is-negative" @click="remove(l)">刪除</button>
+                        <button class="ts-button is-small is-negative is-outlined" @click="remove(l)">刪除</button>
                     </td>
                 </tr>
             </template>
@@ -61,4 +61,4 @@ LevelAsset::register($this);
         </form>
     </dialog>
 </div>
-<script>window.__ITEMS__ = <?= json_encode($items) ?>;</script>
+<script>window.__ITEMS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($items)) ?>;</script>

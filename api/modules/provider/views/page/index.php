@@ -28,7 +28,7 @@ ProviderAsset::register($this);
         <h1>供應商資料</h1>
         <button class="ts-button" @click="openCreate()">+ 新增供應商</button>
     </div>
-    <div class="ts-box">
+    <div class="ts-box is-flush">
         <table class="ts-table">
             <thead>
             <tr><th>名稱</th><th>聯絡人</th><th>電話</th><th>地址</th><th></th></tr>
@@ -42,7 +42,7 @@ ProviderAsset::register($this);
                     <td x-text="p.contact_address"></td>
                     <td>
                         <button class="ts-button is-small is-outlined" @click="openEdit(p)">編輯</button>
-                        <button class="ts-button is-small is-negative" @click="remove(p)">刪除</button>
+                        <button class="ts-button is-small is-negative is-outlined" @click="remove(p)">刪除</button>
                     </td>
                 </tr>
             </template>
@@ -66,4 +66,4 @@ ProviderAsset::register($this);
         </form>
     </dialog>
 </div>
-<script>window.__ITEMS__ = <?= json_encode($items) ?>;</script>
+<script>window.__ITEMS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($items)) ?>;</script>
