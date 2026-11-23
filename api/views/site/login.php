@@ -18,17 +18,19 @@
 /* @var $this \yii\web\View */
 $this->title = '登入 - Anginger ERP';
 ?>
-<div class="card login-card" x-data="loginForm()">
-    <h1>Anginger ERP</h1>
-    <p class="muted">請登入繼續</p>
-    <p class="error" x-show="message" x-text="message"></p>
-    <label>帳號
-        <input x-model="username" @keyup.enter="submit()" autofocus>
-    </label>
-    <label>密碼
-        <input type="password" x-model="password" @keyup.enter="submit()">
-    </label>
-    <button class="btn primary" style="width:100%" @click="submit()" :disabled="loading">登入</button>
+<div class="ts-app-center" style="min-height:100vh">
+    <div class="ts-box login-wrap" x-data="loginForm()">
+        <h1>Anginger ERP</h1>
+        <p class="muted">請登入繼續</p>
+        <p class="error" x-show="message" x-text="message"></p>
+        <label class="app-field">帳號
+            <div class="ts-input"><input x-model="username" @keyup.enter="submit()" autofocus></div>
+        </label>
+        <label class="app-field">密碼
+            <div class="ts-input"><input type="password" x-model="password" @keyup.enter="submit()"></div>
+        </label>
+        <button class="ts-button is-fluid" @click="submit()" :disabled="loading">登入</button>
+    </div>
 </div>
 <script>
 document.addEventListener('alpine:init', () => {

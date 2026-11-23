@@ -26,10 +26,10 @@ LevelAsset::register($this);
 <div x-data="levelPage()">
     <div class="page-head">
         <h1>權限等級</h1>
-        <button class="btn primary" @click="openCreate()">+ 新增等級</button>
+        <button class="ts-button" @click="openCreate()">+ 新增等級</button>
     </div>
-    <div class="card">
-        <table>
+    <div class="ts-box">
+        <table class="ts-table">
             <thead>
             <tr><th>ID</th><th>名稱</th><th></th></tr>
             </thead>
@@ -39,8 +39,8 @@ LevelAsset::register($this);
                     <td x-text="l._id"></td>
                     <td x-text="l.display_name"></td>
                     <td>
-                        <button class="btn" @click="openEdit(l)">編輯</button>
-                        <button class="btn danger" @click="remove(l)">刪除</button>
+                        <button class="ts-button is-small is-outlined" @click="openEdit(l)">編輯</button>
+                        <button class="ts-button is-small is-negative" @click="remove(l)">刪除</button>
                     </td>
                 </tr>
             </template>
@@ -49,16 +49,16 @@ LevelAsset::register($this);
         </table>
     </div>
 
-    <div class="modal" x-show="mode !== 0" @click.self="mode = 0">
-        <div class="card modal-card">
+    <dialog class="ts-modal" :open="mode !== 0" @click.self="mode = 0">
+        <div class="content">
             <h2 x-text="mode === 1 ? '新增等級' : '編輯等級'"></h2>
             <p class="error" x-show="message" x-text="message"></p>
-            <label>名稱<input x-model="form.display_name"></label>
-            <div class="row">
-                <button class="btn" @click="mode = 0">取消</button>
-                <button class="btn primary" @click="submit()" x-text="mode === 1 ? '送出' : '儲存'"></button>
+            <label class="app-field">名稱<div class="ts-input"><input x-model="form.display_name"></div></label>
+            <div class="ts-buttons is-end-aligned">
+                <button class="ts-button is-outlined" @click="mode = 0">取消</button>
+                <button class="ts-button" @click="submit()" x-text="mode === 1 ? '送出' : '儲存'"></button>
             </div>
         </div>
-    </div>
+    </dialog>
 </div>
 <script>window.__ITEMS__ = <?= json_encode($items) ?>;</script>
