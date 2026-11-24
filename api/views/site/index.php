@@ -39,7 +39,7 @@ $this->title = '總覽 - Anginger ERP';
         <template x-for="h in items" :key="h._id">
             <tr>
                 <td x-text="ts(h.created_time)"></td>
-                <td x-text="h.user"></td>
+                <td x-text="h.user_name || h.user"></td>
                 <td><span class="ts-chip" :class="'m-' + (h.method || '').toLowerCase()" x-text="h.method"></span></td>
                 <td x-text="h.resource"></td>
             </tr>

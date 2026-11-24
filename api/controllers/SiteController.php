@@ -18,6 +18,8 @@
 namespace anginger\controllers;
 
 use anginger\models\History;
+use anginger\models\User;
+use yii\helpers\ArrayHelper;
 use Yii;
 use yii\web\Response;
 
@@ -34,7 +36,16 @@ class SiteController extends BaseController
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         }
-        $histories = History::find()->orderBy(['created_time' => SORT_DESC])->limit(100)->all();
+        $items = History::find()->orderBy(['created_time' => SORT_DESC])->limit(100)->all();
+        $names = [];
+        foreach (User::find()->select(['uuid', 'username'])->all() as $u) {
+            $names[$u->uuid] = $u->username;
+        }
+        $histories = array_map(function (History $h) use ($names) {
+            $row = ArrayHelper::toArray($h);
+            $row['user_name'] = $names[$h->user] ?? null;
+            return $row;
+        }, $items);
         return $this->render('index', ['histories' => $histories]);
     }
 

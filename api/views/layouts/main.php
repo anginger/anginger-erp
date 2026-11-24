@@ -23,6 +23,7 @@ use yii\helpers\Html;
 
 AppAsset::register($this);
 $path = Yii::$app->request->pathInfo;
+if ($path === 'site/index') { $path = ''; }
 $me = Yii::$app->user->isGuest ? null : Yii::$app->user->identity;
 $meName = $me ? ($me->display_name ?? $me->username) : '';
 $this->beginPage();
