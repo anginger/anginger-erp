@@ -39,7 +39,7 @@ UserAsset::register($this);
             <template x-for="u in items" :key="u.uuid">
                 <tr :class="{archived: u.archived}">
                     <td x-text="u.username"></td>
-                    <td x-text="u.display_name"></td>
+                    <td><span class="cell-user"><span class="avatar" x-text="(u.display_name || u.username || '?').charAt(0).toUpperCase()"></span><span x-text="u.display_name"></span></span></td>
                     <td x-text="levelName(u.level)"></td>
                     <td x-text="u.email"></td>
                     <td x-text="u.phone"></td>

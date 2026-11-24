@@ -31,8 +31,8 @@ $this->beginPage();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0F766E">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230D9488'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
+    <meta name="theme-color" content="#5865F2">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235865F2'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
     <script>
     (function () {{
         var t = null;
@@ -50,6 +50,7 @@ $this->beginPage();
 <?php $this->beginBody() ?>
 <a class="skip-link" href="#main">跳到主要內容</a>
 <header class="ts-app-topbar app-topbar">
+    <div class="breathing-bar" aria-hidden="true"></div>
     <div class="start">
         <a class="brand" href="/"><span class="brand-mark">A</span><span class="brand-name">Anginger ERP</span></a>
     </div>
