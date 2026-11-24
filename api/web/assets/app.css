@@ -1,6 +1,6 @@
 /* ==========================================================================
    Anginger ERP — 工作台 — design theme on top of TocasUI (loads after it)
-   Brand: teal. Type: Inter (vendored) + Noto Sans TC. Dark mode via
+   Brand: blurple #5865F2 (deter-style). Type: Noto Sans TC + Inter (vendored). Dark mode via
    color-scheme (TocasUI vars are light-dark(), body.is-dark also works).
    ========================================================================== */
 
@@ -12,9 +12,9 @@
 
 :root {
   color-scheme: light dark;
-  --brand-50: #F0FDFA; --brand-100: #CCFBF1; --brand-200: #99F6E4; --brand-300: #5EEAD4;
-  --brand-400: #2DD4BF; --brand-500: #14B8A6; --brand-600: #0D9488; --brand-700: #0F766E;
-  --brand-800: #115E59; --brand-900: #134E4A; --brand-950: #042F2E;
+  --brand-50: #EEF1FE; --brand-100: #DFE5FD; --brand-200: #C3CBFA; --brand-300: #A3ADF6;
+  --brand-400: #8390F3; --brand-500: #5865F2; --brand-600: #4A55D6; --brand-700: #3D45B0;
+  --brand-800: #30378C; --brand-900: #292E6E; --brand-950: #1B1F49;
   /* rebrand every TocasUI primary use (focus rings, links, active states) */
   --ts-primary-50: var(--brand-50); --ts-primary-100: var(--brand-100);
   --ts-primary-200: var(--brand-200); --ts-primary-300: var(--brand-300);
@@ -30,7 +30,7 @@
 
 /* ---------- base ---------- */
 body {
-  font-family: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  font-family: "Noto Sans TC", "Inter", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
   background: var(--ts-gray-100);
   color: var(--ts-gray-900);
 }
@@ -211,3 +211,44 @@ a, button, .ts-button, .ts-menu .item { touch-action: manipulation; }
 
 [x-cloak] { display: none !important; }
 .ldap-hint { margin: 0.9rem 0 0; text-align: center; }
+
+/* ==========================================================================
+   deter-style additions (inspired by github.com/sa-kingdom/deter)
+   ========================================================================== */
+@font-face { font-family: "Noto Sans TC"; src: url("fonts/noto-sans-tc.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+/* breathing gradient bar on top of the navbar */
+.breathing-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 1000; pointer-events: none;
+  background: linear-gradient(90deg, #5865F2, #00B4D8, #5865F2); background-size: 200% 100%;
+  animation: navbar-pulse 2.4s ease-in-out infinite, navbar-shift 3.6s linear infinite;
+}
+@keyframes navbar-pulse {
+  0%, 100% { opacity: 0.45; filter: drop-shadow(0 0 3px #5865F2); }
+  50% { opacity: 1; filter: drop-shadow(0 0 8px #00B4D8); }
+}
+@keyframes navbar-shift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+/* button press feedback */
+.ts-button { transition: background-color .15s ease, border-color .15s ease, transform .1s ease, box-shadow .15s ease, filter .15s ease !important; }
+.ts-button:hover { filter: brightness(1.07) !important; }
+.ts-button:active { transform: scale(0.96) !important; }
+
+/* interactive table rows + user cell with avatar */
+.ts-table tbody tr { transition: background-color .12s ease; }
+.ts-table tbody tr:hover { background: var(--ts-primary-50); }
+.cell-user { display: inline-flex; align-items: center; gap: 0.55rem; font-weight: 600; }
+.avatar {
+  width: 26px; height: 26px; border-radius: 50%; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--brand-400), var(--brand-600));
+  color: #fff; font-size: 0.72rem; font-weight: 800;
+}
+
+/* skeleton shimmer loading */
+.skel {
+  background: linear-gradient(90deg, var(--ts-gray-200) 25%, var(--ts-gray-100) 50%, var(--ts-gray-200) 75%);
+  background-size: 200% 100%; border-radius: 4px;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+@keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
