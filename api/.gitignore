@@ -5,3 +5,4 @@ vendor/
 !web/assets/vendor/
 .idea/
 database.sqlite
+config.local.php

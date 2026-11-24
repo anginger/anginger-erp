@@ -4,7 +4,7 @@ COPY ./api /build
 RUN composer install
 
 FROM alpine:3.16
-RUN apk add nginx php8 php8-fpm supervisor
+RUN apk add nginx php8 php8-fpm php8-ldap php8-sqlite3 php8-mbstring php8-ctype php8-json php8-session php8-openssl php8-curl php8-fileinfo php8-xml php8-tokenizer supervisor
 COPY ./conf/supervisord.conf /etc/supervisord.conf
 COPY ./conf/nginx.conf /etc/nginx/http.d/default.conf
 COPY --from=api-builder /build /app/api

@@ -1,33 +1,26 @@
 <?php
 /**
- * Copyright 2025 Anginger Platform
+ * Copyright 2026 Anginger
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the MIT License (https://opensource.org/licenses/MIT)
  */
 
 namespace anginger\controllers;
 
+use anginger\components\AuthService;
+use anginger\components\LdapClient;
 use anginger\models\User;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
- * Port of `Slim\Controllers\Authentic` (main branch).
+ * Session authentication.
  *
- *   GET    /authentic/session -> getSession    (current user or 401)
- *   POST   /authentic/session -> postSession   (login, 201 or 401)
- *   DELETE /authentic/session -> deleteSession (logout, 204 or 401)
+ *   GET    /api/authentic/session -> current user (200) or 401
+ *   POST   /api/authentic/session -> login, 201 / 401 / 423 (archived)
+ *   DELETE /api/authentic/session -> logout, 204 or 401
+ *   GET    /api/authentic/ldap    -> {"enabled": bool} LDAP/AD status (public, for the login page)
  */
 class AuthenticController extends BaseController
 {
@@ -38,8 +31,22 @@ class AuthenticController extends BaseController
                 'class' => VerbFilter::class,
                 'actions' => [
                     'session' => ['GET', 'POST', 'DELETE'],
+                    'ldap' => ['GET'],
                 ],
             ],
+        ]);
+    }
+
+    /**
+     * Public LDAP status so the login page can show an "LDAP/AD 登入已啟用" hint.
+     * Never exposes bind credentials.
+     */
+    public function actionLdap(): Response
+    {
+        $c = LdapClient::config();
+        return $this->asJson([
+            'enabled' => LdapClient::enabled(),
+            'host' => LdapClient::enabled() ? strval($c['host'] ?? '') : null,
         ]);
     }
 
@@ -59,9 +66,14 @@ class AuthenticController extends BaseController
                 if (!isset($form['username']) || !isset($form['password'])) {
                     return $this->badRequest();
                 }
-                $user = User::findByUsernameAndPassword(strval($form['username']), strval($form['password']));
+                [$user, $error] = AuthService::attempt(strval($form['username']), strval($form['password']));
                 if ($user === null) {
-                    return $this->unauthorized();
+                    if ($error === AuthService::ERROR_ARCHIVED) {
+                        Yii::$app->response->setStatusCode(423);
+                        return $this->asJson(['message' => '帳號已封存，請聯繫管理員']);
+                    }
+                    Yii::$app->response->setStatusCode(401);
+                    return $this->asJson(['message' => '帳號或密碼錯誤']);
                 }
                 Yii::$app->user->login($user);
                 return $this->emptyResponse(201);

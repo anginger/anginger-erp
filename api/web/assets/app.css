@@ -129,6 +129,14 @@ main { scroll-margin-top: 4.5rem; }
 .chip-put, .chip-patch, .m-put, .m-patch { --accent-color: var(--ts-warning-500); }
 .chip-delete, .m-delete { --accent-color: var(--ts-negative-500); }
 
+/* account source / status chips */
+.m-ldap { --accent-color: var(--brand-500); }
+.m-local { --accent-color: var(--ts-gray-500); }
+.m-ok { --accent-color: var(--ts-positive-500); }
+.m-archived { --accent-color: var(--ts-negative-500); }
+tr.archived td { opacity: 0.55; }
+tr.archived td:nth-child(1) { text-decoration: line-through; }
+
 /* ---------- modal ---------- */
 dialog.ts-modal { --width: 440px; overscroll-behavior: contain; }
 dialog.ts-modal > .content,
@@ -200,3 +208,6 @@ a, button, .ts-button, .ts-menu .item { touch-action: manipulation; }
 
 /* ---------- ERP overview ---------- */
 .welcome-card { border-left: 4px solid var(--brand-500); }
+
+[x-cloak] { display: none !important; }
+.ldap-hint { margin: 0.9rem 0 0; text-align: center; }

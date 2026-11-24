@@ -24,31 +24,35 @@ use anginger\modules\user\assets\UserAsset;
 $this->title = '使用者管理 - Anginger ERP';
 UserAsset::register($this);
 ?>
-<div x-data="userPage()">
+<div x-data="userPage()" x-init="refresh()">
     <div class="page-head">
         <h1>使用者管理</h1>
-        <button class="ts-button" @click="openCreate()">+ 新增使用者</button>
+        <button class="ts-button" @click="openCreate()" :disabled="ldap" :title="ldap ? 'LDAP/AD 已啟用，帳號由目錄同步，無法手動新增' : ''">+ 新增使用者</button>
     </div>
+    <p class="muted" x-show="ldap" x-cloak>LDAP/AD 登入已啟用：內建註冊已停用，新帳號會在使用者首次登入時自動同步；內建帳號仍可使用本機密碼登入。</p>
     <div class="ts-box is-flush">
         <table class="ts-table">
             <thead>
-            <tr><th>帳號</th><th>姓名</th><th>等級</th><th>Email</th><th>電話</th><th></th></tr>
+            <tr><th>帳號</th><th>姓名</th><th>等級</th><th>Email</th><th>電話</th><th>來源</th><th>狀態</th><th></th></tr>
             </thead>
             <tbody>
             <template x-for="u in items" :key="u.uuid">
-                <tr>
+                <tr :class="{archived: u.archived}">
                     <td x-text="u.username"></td>
                     <td x-text="u.display_name"></td>
                     <td x-text="levelName(u.level)"></td>
                     <td x-text="u.email"></td>
                     <td x-text="u.phone"></td>
+                    <td><span class="ts-chip" :class="u.auth_source === 'ldap' ? 'm-ldap' : 'm-local'" x-text="u.auth_source === 'ldap' ? 'LDAP' : '本地'"></span></td>
+                    <td><span class="ts-chip" :class="u.archived ? 'm-archived' : 'm-ok'" x-text="u.archived ? '已封存' : '正常'"></span></td>
                     <td>
                         <button class="ts-button is-small is-outlined" @click="openEdit(u)">編輯</button>
+                        <button class="ts-button is-small is-outlined" :class="u.archived ? 'is-positive' : 'is-warning'" @click="toggleArchive(u)" x-text="u.archived ? '解除封存' : '封存'"></button>
                         <button class="ts-button is-small is-negative is-outlined" @click="remove(u)">刪除</button>
                     </td>
                 </tr>
             </template>
-            <tr x-show="items.length === 0"><td colspan="6" class="empty">尚無資料</td></tr>
+            <tr x-show="items.length === 0"><td colspan="8" class="empty">尚無資料</td></tr>
             </tbody>
         </table>
     </div>

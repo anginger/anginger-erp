@@ -53,6 +53,24 @@ abstract class ResourceController extends BaseController
 
     abstract protected function fillUpdate(ActiveRecord $model, array $form): void;
 
+    /** Hook: return a Response to abort creation, or null to proceed. */
+    protected function validateCreate(array $form): ?Response
+    {
+        return null;
+    }
+
+    /** Hook: return a Response to abort the update, or null to proceed. */
+    protected function validateUpdate(ActiveRecord $model, array $form): ?Response
+    {
+        return null;
+    }
+
+    /** Hook: return a Response to abort deletion, or null to proceed. */
+    protected function beforeDelete(ActiveRecord $model): ?Response
+    {
+        return null;
+    }
+
     public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
@@ -89,6 +107,9 @@ abstract class ResourceController extends BaseController
                         return $this->badRequest();
                     }
                 }
+                if (($error = $this->validateCreate($form)) !== null) {
+                    return $error;
+                }
                 $model = $this->fillCreate($form);
                 try {
                     return $model->save(false) ? $this->emptyResponse(201) : $this->serverError();
@@ -107,6 +128,9 @@ abstract class ResourceController extends BaseController
                 if ($model === null) {
                     return $this->notFound();
                 }
+                if (($error = $this->validateUpdate($model, $form)) !== null) {
+                    return $error;
+                }
                 $this->fillUpdate($model, $form);
                 try {
                     return $model->save(false) ? $this->emptyResponse(204) : $this->serverError();
@@ -120,9 +144,13 @@ abstract class ResourceController extends BaseController
                     return $this->badRequest();
                 }
                 $model = $modelClass::findOne($key);
-                if ($model !== null) {
-                    $model->delete();
+                if ($model === null) {
+                    return $this->notFound();
                 }
+                if (($error = $this->beforeDelete($model)) !== null) {
+                    return $error;
+                }
+                $model->delete();
                 return $this->emptyResponse(204);
         }
         return $this->badRequest();
