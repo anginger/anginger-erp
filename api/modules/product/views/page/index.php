@@ -26,10 +26,10 @@ ProductAsset::register($this);
 <div x-data="productPage()">
     <div class="page-head">
         <h1>產品資料</h1>
-        <button class="btn primary" @click="openCreate()">+ 新增產品</button>
+        <button class="ts-button" @click="openCreate()">+ 新增產品</button>
     </div>
-    <div class="card">
-        <table>
+    <div class="ts-box is-flush">
+        <table class="ts-table">
             <thead>
             <tr><th>名稱</th><th>成本</th><th>售價</th><th>數量</th><th></th></tr>
             </thead>
@@ -41,8 +41,8 @@ ProductAsset::register($this);
                     <td x-text="p.sell_value"></td>
                     <td x-text="p.remain_amount"></td>
                     <td>
-                        <button class="btn" @click="openEdit(p)">編輯</button>
-                        <button class="btn danger" @click="remove(p)">刪除</button>
+                        <button class="ts-button is-small is-outlined" @click="openEdit(p)">編輯</button>
+                        <button class="ts-button is-small is-negative is-outlined" @click="remove(p)">刪除</button>
                     </td>
                 </tr>
             </template>
@@ -51,19 +51,19 @@ ProductAsset::register($this);
         </table>
     </div>
 
-    <div class="modal" x-show="mode !== 0" @click.self="mode = 0">
-        <div class="card modal-card">
+    <dialog class="ts-modal" :open="mode !== 0" @click.self="mode = 0">
+        <form class="content" @submit.prevent="submit()">
             <h2 x-text="mode === 1 ? '新增產品' : '編輯產品'"></h2>
-            <p class="error" x-show="message" x-text="message"></p>
-            <label>名稱<input x-model="form.display_name"></label>
-            <label>成本<input type="number" x-model="form.cost_value"></label>
-            <label>售價<input type="number" x-model="form.sell_value"></label>
-            <label>數量<input type="number" x-model="form.remain_amount"></label>
-            <div class="row">
-                <button class="btn" @click="mode = 0">取消</button>
-                <button class="btn primary" @click="submit()" x-text="mode === 1 ? '送出' : '儲存'"></button>
+            <p class="error" aria-live="polite" x-show="message" x-text="message"></p>
+            <label class="app-field">名稱<div class="ts-input"><input name="display_name" autocomplete="off" x-model="form.display_name"></div></label>
+            <label class="app-field">成本<div class="ts-input"><input type="number" name="cost_value" autocomplete="off" x-model="form.cost_value"></div></label>
+            <label class="app-field">售價<div class="ts-input"><input type="number" name="sell_value" autocomplete="off" x-model="form.sell_value"></div></label>
+            <label class="app-field">數量<div class="ts-input"><input type="number" name="remain_amount" autocomplete="off" x-model="form.remain_amount"></div></label>
+            <div class="ts-buttons is-end-aligned">
+                <button class="ts-button is-outlined" type="button" @click="mode = 0">取消</button>
+                <button class="ts-button" type="submit" x-text="mode === 1 ? '送出' : '儲存'"></button>
             </div>
-        </div>
-    </div>
+        </form>
+    </dialog>
 </div>
-<script>window.__ITEMS__ = <?= json_encode($items) ?>;</script>
+<script>window.__ITEMS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($items)) ?>;</script>

@@ -20,13 +20,20 @@ namespace anginger\assets;
 use yii\web\AssetBundle;
 
 /**
- * Global assets: Alpine.js (localized, no CDN dependency) + shared CSS.
- * Every module asset bundle depends on this one.
+ * Global assets: TocasUI (vendored, no CDN dependency) + project overrides,
+ * plus Alpine.js (vendored). Every module asset bundle depends on this one.
  */
 class AppAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
-    public $css = ['assets/app.css'];
+    public $css = [
+        'assets/vendor/tocas.min.css',
+        'assets/app.css',
+    ];
     public $js = ['assets/alpine.min.js'];
+    // Alpine 3.14 starts on a microtask as soon as its script runs; defer makes
+    // it execute after classic end-of-body module scripts, so their
+    // 'alpine:init' listeners are registered before Alpine dispatches the event.
+    public $jsOptions = ['defer' => true];
 }

@@ -21,8 +21,10 @@ use yii\helpers\Html;
 /* @var $exception \Throwable */
 $this->title = '錯誤 - Anginger ERP';
 ?>
-<div class="card login-card">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p class="error"><?= Html::encode($exception->getMessage()) ?></p>
-    <p><a href="/">回到首頁</a></p>
+<div class="login-panel" style="min-height:100vh">
+    <div class="login-card">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <p class="error"><?= Html::encode($exception->getMessage()) ?></p>
+        <p><a href="/">回到首頁</a></p>
+    </div>
 </div>

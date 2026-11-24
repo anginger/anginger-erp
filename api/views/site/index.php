@@ -21,17 +21,17 @@ use yii\helpers\Html;
 /* @var $histories \anginger\models\History[] */
 $this->title = '總覽 - Anginger ERP';
 ?>
-<div class="card">
+<div class="ts-box welcome-card" style="margin-bottom:1rem">
     <h1>總覽</h1>
     <p>歡迎，<?= Html::encode(Yii::$app->user->identity->display_name) ?>。</p>
     <p class="muted">Anginger ERP 是一款輕量級 ERP 系統，面向臺灣客戶設計。</p>
 </div>
-<div class="card" x-data="historyWidget()" x-init="load()">
+<div class="ts-box" x-data="historyWidget()" x-init="load()">
     <div class="page-head">
         <h2>操作紀錄</h2>
-        <button class="btn" @click="load()">重新整理</button>
+        <button class="ts-button is-outlined" @click="load()">重新整理</button>
     </div>
-    <table>
+    <table class="ts-table">
         <thead>
         <tr><th>時間</th><th>使用者</th><th>方法</th><th>資源</th></tr>
         </thead>
@@ -40,7 +40,7 @@ $this->title = '總覽 - Anginger ERP';
             <tr>
                 <td x-text="ts(h.created_time)"></td>
                 <td x-text="h.user"></td>
-                <td><span class="badge" x-text="h.method"></span></td>
+                <td><span class="ts-chip" :class="'m-' + (h.method || '').toLowerCase()" x-text="h.method"></span></td>
                 <td x-text="h.resource"></td>
             </tr>
         </template>
@@ -49,7 +49,7 @@ $this->title = '總覽 - Anginger ERP';
     </table>
 </div>
 <script>
-window.__HISTORIES__ = <?= json_encode($histories) ?>;
+window.__HISTORIES__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($histories)) ?>;
 document.addEventListener('alpine:init', () => {
     Alpine.data('historyWidget', () => ({
         items: window.__HISTORIES__ || [],

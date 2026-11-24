@@ -2,5 +2,6 @@ config.inc.php
 composer.lock
 test.php
 vendor/
+!web/assets/vendor/
 .idea/
 database.sqlite
