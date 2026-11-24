@@ -1,0 +1,4 @@
+api/database.sqlite
+api/runtime/
+api/vendor/
+.playwright-cli/

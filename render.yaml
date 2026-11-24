@@ -1,0 +1,16 @@
+# Render deploy via Docker (PHP 8.4 image — the app requires PHP >= 8.2,
+# see api/composer.json). Create the service from this file:
+#   Dashboard -> New -> Blueprint (or "render.yaml" in repo root)
+services:
+  - type: web
+    name: anginger-erp
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    autoDeploy: true
+    envVars:
+      # LDAP/AD (optional): set LDAP_ENABLED=true and the directory settings
+      # - key: LDAP_ENABLED
+      #   value: "false"
+      # - key: LDAP_HOST
+      #   sync: false

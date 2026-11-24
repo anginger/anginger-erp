@@ -17,6 +17,10 @@ Anginger ERP is a lightweight ERP system designed for Taiwanese.
 - **Database**: SQLite in dev (`api/database.sqlite`), created by
   `php api/console.php migrate --interactive=0`.
 
+## Deploy / Render
+
+需要 **PHP >= 8.2**（`api/composer.json` 有寫，brick/math 依賴要求 ^8.2）。Render 上請用 **Docker service**（吃 repo 的 `render.yaml` + `Dockerfile`，PHP 8.4），或 native PHP service 時在 Dashboard 把 PHP version 選 8.2 以上。
+
 ## Run in development
 
 ```sh
