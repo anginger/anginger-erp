@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-return [
+$config = [
     'id' => 'anginger-erp',
     'basePath' => __DIR__,
     'controllerNamespace' => 'anginger\\controllers',
@@ -73,4 +73,39 @@ return [
         'level' => 'anginger\modules\level\Module',
         'history' => 'anginger\modules\history\Module',
     ],
+    'params' => [
+        // LDAP / Active Directory login. Every value can be set via an
+        // environment variable (LDAP_*) or overridden in config.local.php
+        // (gitignored) — copy config.local.sample.php to get started.
+        //
+        // When enabled: built-in registration is disabled, LDAP users are
+        // provisioned into `users` on first login, and built-in (local)
+        // accounts keep working with their local password.
+        'ldap' => [
+            'enabled' => filter_var(getenv('LDAP_ENABLED') ?: 'false', FILTER_VALIDATE_BOOLEAN),
+            'host' => getenv('LDAP_HOST') ?: '127.0.0.1',
+            'port' => (int)(getenv('LDAP_PORT') ?: 389),          // 636 for LDAPS
+            'base_dn' => getenv('LDAP_BASE_DN') ?: '',            // e.g. DC=company,DC=com
+            'bind_dn' => getenv('LDAP_BIND_DN') ?: '',            // service account (optional)
+            'bind_password' => getenv('LDAP_BIND_PASSWORD') ?: '',
+            // strategy 1 (service account search): user_filter is sprintf'd with
+            // the escaped username — AD: (sAMAccountName=%s), OpenLDAP: (uid=%s)
+            'user_filter' => getenv('LDAP_USER_FILTER') ?: '(uid=%s)',
+            // strategy 2 (direct bind, no service account): DN pattern, %s = escaped username
+            'user_dn_pattern' => getenv('LDAP_USER_DN_PATTERN') ?: '',
+            'username_attribute' => getenv('LDAP_USERNAME_ATTRIBUTE') ?: 'uid',   // AD: sAMAccountName
+            'display_name_attribute' => getenv('LDAP_DISPLAY_NAME_ATTRIBUTE') ?: 'cn',
+            'email_attribute' => getenv('LDAP_EMAIL_ATTRIBUTE') ?: 'mail',
+            'start_tls' => filter_var(getenv('LDAP_STARTTLS') ?: 'false', FILTER_VALIDATE_BOOLEAN),
+            'timeout' => (int)(getenv('LDAP_TIMEOUT') ?: 5),
+        ],
+    ],
 ];
+
+// local overrides (secrets) — copy config.local.sample.php to config.local.php
+$localConfig = __DIR__ . '/config.local.php';
+if (is_file($localConfig)) {
+    $config = array_replace_recursive($config, require $localConfig);
+}
+
+return $config;

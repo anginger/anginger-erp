@@ -43,6 +43,7 @@ $this->title = '登入 - Anginger ERP';
                 <span class="ts-input"><input type="password" name="password" autocomplete="current-password" x-model="password"></span>
             </label>
             <button class="ts-button is-fluid" type="submit" :disabled="loading" x-text="loading ? '登入中…' : '登入'"></button>
+            <p class="muted ldap-hint" x-show="ldap" x-cloak>已啟用 LDAP/AD 登入 — 內建帳號與目錄帳號皆可登入</p>
         </form>
     </div>
 </div>
@@ -53,6 +54,13 @@ document.addEventListener('alpine:init', () => {
         password: '',
         message: '',
         loading: false,
+        ldap: false,
+        async init() {
+            try {
+                const r = await fetch('/api/authentic/ldap', {credentials: 'same-origin'});
+                if (r.ok) { const d = await r.json(); this.ldap = !!d.enabled; }
+            } catch (e) { /* hint is optional */ }
+        },
         async submit() {
             this.loading = true;
             this.message = '';
