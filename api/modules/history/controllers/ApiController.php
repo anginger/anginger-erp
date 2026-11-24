@@ -19,6 +19,8 @@ namespace anginger\modules\history\controllers;
 
 use anginger\controllers\BaseController;
 use anginger\models\History;
+use anginger\models\User;
+use yii\helpers\ArrayHelper;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -59,6 +61,16 @@ class ApiController extends BaseController
         if (!$this->requireLogin()) {
             return $this->forbidden();
         }
-        return $this->asJson(History::find()->orderBy(['created_time' => SORT_DESC])->all());
+        $items = History::find()->orderBy(['created_time' => SORT_DESC])->all();
+        $names = [];
+        foreach (User::find()->select(['uuid', 'username'])->all() as $u) {
+            $names[$u->uuid] = $u->username;
+        }
+        $rows = array_map(function (History $h) use ($names) {
+            $row = ArrayHelper::toArray($h);
+            $row['user_name'] = $names[$h->user] ?? null;
+            return $row;
+        }, $items);
+        return $this->asJson($rows);
     }
 }

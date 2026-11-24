@@ -19,6 +19,8 @@ namespace anginger\modules\history\controllers;
 
 use anginger\controllers\PageBaseController;
 use anginger\models\History;
+use anginger\models\User;
+use yii\helpers\ArrayHelper;
 
 /**
  * Server-rendered audit log page (/history).
@@ -28,6 +30,15 @@ class PageController extends PageBaseController
     public function actionIndex(): string
     {
         $items = History::find()->orderBy(['created_time' => SORT_DESC])->limit(200)->all();
-        return $this->render('index', ['items' => $items]);
+        $names = [];
+        foreach (User::find()->select(['uuid', 'username'])->all() as $u) {
+            $names[$u->uuid] = $u->username;
+        }
+        $rows = array_map(function (History $h) use ($names) {
+            $row = ArrayHelper::toArray($h);
+            $row['user_name'] = $names[$h->user] ?? null;
+            return $row;
+        }, $items);
+        return $this->render('index', ['items' => $rows]);
     }
 }
