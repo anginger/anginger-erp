@@ -1,7 +1,8 @@
 /* ==========================================================================
    Anginger ERP — 工作台 — design theme on top of TocasUI (loads after it)
-   Brand: blurple #5865F2 (deter-style). Type: Noto Sans TC + Inter (vendored). Dark mode via
-   color-scheme (TocasUI vars are light-dark(), body.is-dark also works).
+   deter-style (github.com/sa-kingdom/deter): matte black primary controls, 6px
+   square-ish radius, flat bordered cards with no shadow; blurple #5865F2 kept as
+   accent only (breathing bar, links, focus ring, avatars). Noto Sans TC vendored.
    ========================================================================== */
 
 @font-face { font-family: "Inter"; src: url("fonts/inter-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
@@ -15,15 +16,17 @@
   --brand-50: #EEF1FE; --brand-100: #DFE5FD; --brand-200: #C3CBFA; --brand-300: #A3ADF6;
   --brand-400: #8390F3; --brand-500: #5865F2; --brand-600: #4A55D6; --brand-700: #3D45B0;
   --brand-800: #30378C; --brand-900: #292E6E; --brand-950: #1B1F49;
-  /* rebrand every TocasUI primary use (focus rings, links, active states) */
-  --ts-primary-50: var(--brand-50); --ts-primary-100: var(--brand-100);
-  --ts-primary-200: var(--brand-200); --ts-primary-300: var(--brand-300);
-  --ts-primary-400: var(--brand-400); --ts-primary-500: var(--brand-500);
-  --ts-primary-600: var(--brand-600); --ts-primary-700: var(--brand-700);
-  --ts-primary-800: var(--brand-800); --ts-primary-900: var(--brand-900);
-  --ts-border-radius-element: 0.625rem;
-  --ts-border-radius-container: 1rem;
-  --card-shadow: 0 1px 2px rgb(16 24 40 / 0.05);
+  /* deter-style: primary maps to the gray scale, so primary buttons / active menu
+     items are matte black in light mode and auto-invert to white in dark mode.
+     Blurple stays as accent via --brand-* (breathing bar, links, focus, avatars). */
+  --ts-primary-50: var(--ts-gray-50); --ts-primary-100: var(--ts-gray-100);
+  --ts-primary-200: var(--ts-gray-200); --ts-primary-300: var(--ts-gray-300);
+  --ts-primary-400: var(--ts-gray-500); --ts-primary-500: var(--ts-gray-800);
+  --ts-primary-600: var(--ts-gray-900); --ts-primary-700: var(--ts-gray-900);
+  --ts-primary-800: var(--ts-gray-900); --ts-primary-900: var(--ts-gray-950);
+  --ts-border-radius-element: 0.4rem;   /* 6px square-ish corners */
+  --ts-border-radius-container: 0.4rem;
+  --card-shadow: none;                   /* matte: flat cards, no drop shadow */
 }
 :root[data-theme="dark"] { color-scheme: dark; }
 :root[data-theme="light"] { color-scheme: light; }
@@ -31,7 +34,7 @@
 /* ---------- base ---------- */
 body {
   font-family: "Noto Sans TC", "Inter", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
-  background: var(--ts-gray-100);
+  background: light-dark(#f7f7f8, #161616);
   color: var(--ts-gray-900);
 }
 ::selection { background: var(--brand-200); }
@@ -43,11 +46,10 @@ main { scroll-margin-top: 4.5rem; }
 /* ---------- brand ---------- */
 .brand { display: inline-flex; align-items: center; gap: 0.55rem; text-decoration: none; color: inherit; }
 .brand-mark {
-  width: 30px; height: 30px; border-radius: 9px; flex: none;
+  width: 30px; height: 30px; border-radius: 6px; flex: none;
   display: inline-flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, var(--brand-400), var(--brand-700));
   color: #fff; font-weight: 800; font-size: 0.95rem; letter-spacing: -0.02em;
-  box-shadow: 0 1px 3px rgb(4 47 46 / 0.35);
 }
 .brand-name { font-weight: 800; font-size: 1.02rem; letter-spacing: -0.02em; }
 
@@ -56,20 +58,19 @@ main { scroll-margin-top: 4.5rem; }
   position: sticky; top: 0; z-index: 100;
   display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.75rem;
   padding: 0.55rem 1.25rem; min-height: 56px;
-  background: light-dark(rgb(255 255 255 / 0.85), rgb(24 24 24 / 0.85));
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  background: light-dark(#fafafa, #1c1c1e);
   border-bottom: 1px solid var(--ts-gray-200);
   color: var(--ts-gray-800);
 }
 .app-topbar .end { justify-content: flex-end; gap: 0.4rem; }
-.app-nav { flex-direction: row; gap: 0.2rem; background: var(--ts-gray-100); padding: 0.25rem; border-radius: 999px; }
+.app-nav { flex-direction: row; gap: 0.15rem; background: transparent; padding: 0; }
 .app-nav .item {
-  width: auto; height: auto; border-radius: 999px; padding: 0.35rem 0.85rem;
+  width: auto; height: auto; border-radius: var(--ts-border-radius-element); padding: 0.35rem 0.8rem;
   font-size: 0.875rem; font-weight: 600; color: var(--ts-gray-600); text-decoration: none;
   display: inline-flex; align-items: center;
 }
-.app-nav .item:hover { color: var(--ts-gray-900); text-decoration: none; }
-.app-nav .item.is-active { background: var(--ts-gray-50) !important; color: var(--brand-700) !important; box-shadow: var(--card-shadow); }
+.app-nav .item:hover { background: var(--ts-gray-200); color: var(--ts-gray-900); text-decoration: none; }
+.app-nav .item.is-active { background: var(--ts-gray-800) !important; color: var(--ts-gray-50) !important; box-shadow: none; }
 .app-icon-btn {
   --accent-color: var(--ts-gray-500); --accent-foreground-color: var(--ts-gray-500);
   width: 34px; min-width: 0; height: 34px; border-width: 0; border-radius: 10px; background: transparent; padding: 0;
@@ -96,7 +97,7 @@ main { scroll-margin-top: 4.5rem; }
   background: var(--ts-gray-50);
   border: 1px solid var(--ts-gray-200);
   border-radius: var(--ts-border-radius-container);
-  box-shadow: var(--card-shadow);
+  box-shadow: none;
   padding: 1.25rem;
 }
 .ts-box.is-flush { padding: 0; overflow-x: auto; }
@@ -113,10 +114,9 @@ main { scroll-margin-top: 4.5rem; }
 .ts-table tbody tr:hover td { background: var(--ts-gray-100); }
 
 /* ---------- buttons ---------- */
-.ts-button { --accent-color: var(--brand-600); --accent-foreground-color: #fff; font-weight: 600; }
-.ts-button:hover { --accent-color: var(--brand-700); }
-.ts-button.is-outlined { --accent-color: var(--ts-gray-400); background: transparent; color: var(--ts-gray-800); }
-.ts-button.is-outlined:hover { --accent-color: var(--brand-500); color: var(--brand-700); background: var(--brand-50); }
+.ts-button { font-weight: 600; }  /* default accent = matte black (--ts-gray-800) */
+.ts-button.is-outlined { --accent-color: var(--ts-gray-300); background: transparent; color: var(--ts-gray-800); }
+.ts-button.is-outlined:hover { --accent-color: var(--ts-gray-500); background: var(--ts-gray-100); color: var(--ts-gray-900); }
 .ts-buttons { gap: 0.5rem; }
 
 /* ---------- inputs ---------- */
@@ -125,7 +125,7 @@ main { scroll-margin-top: 4.5rem; }
 
 /* ---------- chips (HTTP method colors) ---------- */
 .chip-get, .m-get { --accent-color: var(--ts-positive-500); }
-.chip-post, .m-post { --accent-color: var(--brand-500); }
+.chip-post, .m-post { --accent-color: var(--ts-gray-600); }
 .chip-put, .chip-patch, .m-put, .m-patch { --accent-color: var(--ts-warning-500); }
 .chip-delete, .m-delete { --accent-color: var(--ts-negative-500); }
 
@@ -144,8 +144,9 @@ dialog.ts-modal > form.content {
   display: block;
   padding: 1.5rem;
   background: var(--ts-gray-50);
+  border: 1px solid var(--ts-gray-200);
   border-radius: var(--ts-border-radius-container);
-  box-shadow: var(--ts-elevated-shadow-modal);
+  box-shadow: none;
 }
 dialog.ts-modal[open] > .content { animation: modal-in 0.18s ease-out; }
 @keyframes modal-in { from { opacity: 0; transform: scale(0.97) translateY(8px); } to { opacity: 1; transform: none; } }
@@ -170,8 +171,8 @@ td.empty::before {
 .login-hero {
   position: relative; overflow: hidden;
   background:
-    radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px) 0 0 / 22px 22px,
-    linear-gradient(160deg, var(--brand-800), var(--brand-950) 70%);
+    radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(160deg, #2a2c35, #141519 70%);
   color: #fff; padding: 3rem 3.25rem; display: flex; flex-direction: column;
 }
 .login-hero .brand { color: #fff; margin-bottom: auto; }
@@ -186,8 +187,8 @@ td.empty::before {
 .login-card {
   display: block; /* TocasUI resets form { display: contents } */
   width: min(380px, 100%);
-  background: var(--ts-gray-50); border: 1px solid var(--ts-gray-200); border-radius: 1rem;
-  box-shadow: 0 8px 30px rgb(16 24 40 / 0.08);
+  background: var(--ts-gray-50); border: 1px solid var(--ts-gray-200); border-radius: var(--ts-border-radius-container);
+  box-shadow: none;
   padding: 1.9rem;
 }
 .login-card h1, .login-card h2 { font-size: 1.35rem; font-weight: 800; margin: 0 0 0.35rem; }
@@ -236,7 +237,7 @@ a, button, .ts-button, .ts-menu .item { touch-action: manipulation; }
 
 /* interactive table rows + user cell with avatar */
 .ts-table tbody tr { transition: background-color .12s ease; }
-.ts-table tbody tr:hover { background: var(--ts-primary-50); }
+.ts-table tbody tr:hover { background: var(--ts-gray-100); }
 .cell-user { display: inline-flex; align-items: center; gap: 0.55rem; font-weight: 600; }
 .avatar {
   width: 26px; height: 26px; border-radius: 50%; flex: none;
