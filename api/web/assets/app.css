@@ -115,8 +115,8 @@ main { scroll-margin-top: 4.5rem; }
 /* ---------- buttons ---------- */
 .ts-button { --accent-color: var(--brand-600); --accent-foreground-color: #fff; font-weight: 600; }
 .ts-button:hover { --accent-color: var(--brand-700); }
-.ts-button.is-outlined { --accent-color: var(--ts-gray-300); --accent-foreground-color: var(--ts-gray-700); background: transparent; }
-.ts-button.is-outlined:hover { --accent-color: var(--brand-500); --accent-foreground-color: var(--brand-700); background: var(--brand-50); }
+.ts-button.is-outlined { --accent-color: var(--ts-gray-400); background: transparent; color: var(--ts-gray-800); }
+.ts-button.is-outlined:hover { --accent-color: var(--brand-500); color: var(--brand-700); background: var(--brand-50); }
 .ts-buttons { gap: 0.5rem; }
 
 /* ---------- inputs ---------- */
