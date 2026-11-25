@@ -52,8 +52,23 @@ docker run -p 8888:8888 anginger-erp   # http://localhost:8888
 環境變數一覽（AD 範例）：`LDAP_HOST`、`LDAP_PORT`（636=LDAPS）、`LDAP_BASE_DN`、
 `LDAP_BIND_DN`/`LDAP_BIND_PASSWORD`（服務帳號搜尋）或 `LDAP_USER_DN_PATTERN`（直接 bind）、
 `LDAP_USER_FILTER`（AD: `(sAMAccountName=%s)`）、`LDAP_USERNAME_ATTRIBUTE`（AD: `sAMAccountName`）、
-`LDAP_STARTTLS`、`LDAP_TIMEOUT`。需要 PHP **ext-ldap**（Docker image 已內建 `php8-ldap`）。
+`LDAP_STARTTLS`、`LDAP_TIMEOUT`、`LDAP_DISPLAY_NAME_ATTRIBUTE`（預設 `cn`）、`LDAP_EMAIL_ATTRIBUTE`（預設 `mail`）。需要 PHP **ext-ldap**（Docker image 已內建 `php8-ldap`）。
 
+## API
+
+| Method | Path | 說明 |
+| ------ | ---- | ---- |
+| GET | `/api/authentic/session` | 目前登入者（200/401） |
+| POST | `/api/authentic/session` | 登入（201/401/423/429） |
+| DELETE | `/api/authentic/session` | 登出（204） |
+| GET | `/api/authentic/ldap` | LDAP 是否啟用（`{"enabled":bool}`） |
+| GET/POST/PUT/DELETE | `/api/product?uuid=…` | 商品 CRUD（GET 單筆；POST 新增 201；PUT 更新 204；DELETE 204；驗證失敗 400、衝突 409） |
+| 同上結構 | `/api/provider?_id=…` | 供應商 CRUD |
+| 同上結構 | `/api/level?_id=…` | 層級 CRUD |
+| 同上結構 | `/api/user?uuid=…` | 使用者 CRUD |
+| POST | `/api/user/archive` | 封存/解除封存（body：`uuid`、`archived`；封存後登入回 423） |
+| GET | `/api/history?id=…`、`/api/history/all` | 操作紀錄查詢 |
+| GET | `/api/<module>/all` | 各模組列表 |
 ## Operational notes
 
 - Error codes: `401` 未登入、`403` 已登入但無權限（管理功能限 admin）、`423` 帳號已封存、`429` 登入嘗試過於頻繁（5 次 / 15 分鐘，鎖定後回 429）。

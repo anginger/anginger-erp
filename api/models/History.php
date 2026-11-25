@@ -44,4 +44,15 @@ class History extends ActiveRecord
         }
         return parent::beforeSave($insert);
     }
+
+    public function rules(): array
+    {
+        return [
+            [['created_time', 'user', 'method', 'resource'], 'required'],
+            [['created_time'], 'integer'],
+            [['user'], 'string', 'max' => 36],
+            [['method'], 'string'],
+            [['resource'], 'string'],
+        ];
+    }
 }

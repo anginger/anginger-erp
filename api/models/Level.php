@@ -33,4 +33,13 @@ class Level extends ActiveRecord
     {
         return 'levels';
     }
+
+    public function rules(): array
+    {
+        return [
+            [['display_name'], 'required'],
+            [['display_name'], 'string', 'max' => 50],
+            [['display_name'], 'unique'],
+        ];
+    }
 }

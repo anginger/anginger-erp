@@ -115,4 +115,24 @@ public function fields(): array
         }
         return parent::beforeSave($insert);
     }
+
+    public function rules(): array
+    {
+        return [
+            [['uuid', 'username', 'level', 'display_name', 'created_time'], 'required'],
+            [['uuid'], 'string', 'max' => 36],
+            [['username'], 'string', 'max' => 128],
+            [['username'], 'unique'],
+            [['password', 'ldap_dn'], 'string', 'max' => 255],
+            [['level'], 'integer'],
+            [['display_name'], 'string'],
+            [['address'], 'string', 'max' => 255],
+            [['email'], 'string', 'max' => 320],
+            [['email'], 'email'],
+            [['phone'], 'string', 'max' => 50],
+            [['auth_source'], 'in', 'range' => ['local', 'ldap']],
+            [['archived'], 'in', 'range' => [0, 1]],
+            [['created_time', 'last_login_time'], 'integer'],
+        ];
+    }
 }

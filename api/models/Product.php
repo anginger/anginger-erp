@@ -36,4 +36,14 @@ class Product extends ActiveRecord
     {
         return 'products';
     }
+
+    public function rules(): array
+    {
+        return [
+            [['uuid', 'display_name', 'cost_value', 'sell_value', 'remain_amount'], 'required'],
+            [['uuid'], 'string', 'max' => 36],
+            [['display_name'], 'string', 'max' => 50],
+            [['cost_value', 'sell_value', 'remain_amount'], 'integer'],
+        ];
+    }
 }

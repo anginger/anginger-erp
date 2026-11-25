@@ -33,12 +33,14 @@ class PageBaseController extends BaseController
     public function beforeAction($action): bool
     {
         if (Yii::$app->user->isGuest) {
+            $this->logHistory(); // beforeAction returning false skips afterAction
             Yii::$app->response->redirect(['site/login']);
             return false;
         }
         if ($this->requireAdmin) {
             $identity = Yii::$app->user->identity;
             if (!$identity instanceof \anginger\models\User || !$identity->isAdmin()) {
+                $this->logHistory();
                 throw new \yii\web\ForbiddenHttpException('需要管理員權限');
             }
         }

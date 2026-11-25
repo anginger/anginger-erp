@@ -39,6 +39,7 @@ class ApiController extends ResourceController
             Yii::$app->response->setStatusCode(403);
             Yii::$app->response->format = Response::FORMAT_JSON;
             Yii::$app->response->data = ['message' => 'forbidden'];
+            $this->logHistory();
             return false;
         }
         return true;
