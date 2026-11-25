@@ -28,6 +28,7 @@ $this->title = '總覽 - Anginger ERP';
 </div>
 <div class="ts-box" x-data="historyWidget()" x-init="load()">
     <div class="page-head">
+        <div class="ts-input app-search"><input type="search" placeholder="搜尋…" x-model="q" aria-label="搜尋列表"></div>
         <h2>操作紀錄</h2>
         <button class="ts-button is-outlined" @click="load()">重新整理</button>
     </div>
@@ -36,7 +37,7 @@ $this->title = '總覽 - Anginger ERP';
         <tr><th>時間</th><th>使用者</th><th>方法</th><th>資源</th></tr>
         </thead>
         <tbody>
-        <template x-for="h in items" :key="h._id">
+        <template x-for="h in filtered" :key="h._id">
             <tr>
                 <td x-text="ts(h.created_time)"></td>
                 <td x-text="h.user_name || h.user"></td>
@@ -44,7 +45,7 @@ $this->title = '總覽 - Anginger ERP';
                 <td x-text="h.resource"></td>
             </tr>
         </template>
-        <tr x-show="items.length === 0"><td colspan="4" class="empty">尚無紀錄</td></tr>
+        <tr x-show="filtered().length === 0"><td colspan="4" class="empty">尚無紀錄</td></tr>
         </tbody>
     </table>
 </div>

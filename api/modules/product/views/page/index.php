@@ -25,6 +25,7 @@ ProductAsset::register($this);
 ?>
 <div x-data="productPage()">
     <div class="page-head">
+        <div class="ts-input app-search"><input type="search" placeholder="搜尋…" x-model="q" aria-label="搜尋列表"></div>
         <h1>產品資料</h1>
         <button class="ts-button" @click="openCreate()">+ 新增產品</button>
     </div>
@@ -34,7 +35,7 @@ ProductAsset::register($this);
             <tr><th>名稱</th><th>成本</th><th>售價</th><th>數量</th><th></th></tr>
             </thead>
             <tbody>
-            <template x-for="p in items" :key="p.uuid">
+            <template x-for="p in filtered" :key="p.uuid">
                 <tr>
                     <td x-text="p.display_name"></td>
                     <td x-text="p.cost_value"></td>
@@ -46,7 +47,7 @@ ProductAsset::register($this);
                     </td>
                 </tr>
             </template>
-            <tr x-show="items.length === 0"><td colspan="5" class="empty">尚無資料</td></tr>
+            <tr x-show="filtered().length === 0"><td colspan="5" class="empty">尚無資料</td></tr>
             </tbody>
         </table>
     </div>

@@ -2,6 +2,13 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('providerPage', () => ({
         items: window.__ITEMS__ || [],
+        q: '',
+        filtered() {
+            const q = (this.q || '').trim().toLowerCase();
+            const list = this.items || this.conversations || [];
+            if (!q) return list;
+            return list.filter(row => JSON.stringify(row).toLowerCase().includes(q));
+        },
         mode: 0,
         form: {},
         message: '',
@@ -37,7 +44,7 @@ document.addEventListener('alpine:init', () => {
             this.message = d.message || '操作失敗';
         },
         async remove(p) {
-            if (!confirm('確定要刪除「' + p.display_name + '」嗎？')) return;
+            if (!(await appConfirm('確定要刪除「' + p.display_name + '」嗎？'))) return;
             const r = await fetch('/api/provider?id=' + encodeURIComponent(p._id), {
                 method: 'DELETE',
                 credentials: 'same-origin'

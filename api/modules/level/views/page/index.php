@@ -25,6 +25,7 @@ LevelAsset::register($this);
 ?>
 <div x-data="levelPage()">
     <div class="page-head">
+        <div class="ts-input app-search"><input type="search" placeholder="搜尋…" x-model="q" aria-label="搜尋列表"></div>
         <h1>權限等級</h1>
         <button class="ts-button" @click="openCreate()">+ 新增等級</button>
     </div>
@@ -34,7 +35,7 @@ LevelAsset::register($this);
             <tr><th>ID</th><th>名稱</th><th></th></tr>
             </thead>
             <tbody>
-            <template x-for="l in items" :key="l._id">
+            <template x-for="l in filtered" :key="l._id">
                 <tr>
                     <td x-text="l._id"></td>
                     <td x-text="l.display_name"></td>
@@ -44,7 +45,7 @@ LevelAsset::register($this);
                     </td>
                 </tr>
             </template>
-            <tr x-show="items.length === 0"><td colspan="3" class="empty">尚無資料</td></tr>
+            <tr x-show="filtered().length === 0"><td colspan="3" class="empty">尚無資料</td></tr>
             </tbody>
         </table>
     </div>
