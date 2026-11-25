@@ -47,4 +47,4 @@ HistoryAsset::register($this);
         </table>
     </div>
 </div>
-<script>window.__ITEMS__ = <?= json_encode($items) ?>;</script>
+<script>window.__ITEMS__ = <?= \yii\helpers\Json::htmlEncode($items) ?>;</script>

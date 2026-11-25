@@ -66,7 +66,11 @@ class LdapClient
             ldap_set_option($conn, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
         }
         if (!empty($c['start_tls'])) {
-            @ldap_start_tls($conn);
+            if (!@ldap_start_tls($conn)) {
+                Yii::warning('LDAP: start_tls negotiation failed; refusing plaintext credentials');
+                ldap_unbind($conn);
+                return null;
+            }
         }
 
         $userDn = null;

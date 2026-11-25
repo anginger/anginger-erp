@@ -25,13 +25,19 @@ $config = [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'sqlite:@anginger/database.sqlite',
+            'dsn' => getenv('DB_DSN') ?: ('sqlite:' . (getenv('SQLITE_PATH') ?: '@anginger/database.sqlite')),
+            // SQLite: WAL + busy timeout + FK enforcement on every connection
+            'on afterOpen' => function ($event) {
+                if ($event->sender->driverName === 'sqlite') {
+                    $event->sender->createCommand('PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; PRAGMA foreign_keys=ON;')->execute();
+                }
+            },
         ],
         'request' => [
             // required for the session cookie
-            'cookieValidationKey' => 'anginger-erp-dev-key-change-me-in-production',
+            'cookieValidationKey' => getenv('COOKIE_VALIDATION_KEY') ?: 'anginger-dev-key-change-me-in-production',
             // this is a pure JSON API (the old Slim framework had no CSRF either)
-            'enableCsrfValidation' => false,
+            'enableCsrfValidation' => true,
             // the frontend posts URLSearchParams; also accept JSON bodies
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
@@ -45,6 +51,14 @@ $config = [
             'enableAutoLogin' => false,
             'loginUrl' => null, // API returns 401/403 JSON instead of redirecting
         ],
+        'session' => [
+            'cookieParams' => [
+                'httpOnly' => true,
+                'sameSite' => 'Lax',
+                'secure' => filter_var(getenv('SESSION_SECURE') ?: 'false', FILTER_VALIDATE_BOOLEAN),
+            ],
+        ],
+        'cache' => ['class' => 'yii\\caching\\FileCache'],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
@@ -52,6 +66,7 @@ $config = [
                 // pages
                 'login' => 'site/login',
                 'logout' => 'site/logout',
+                'health' => 'site/health',
                 // every business domain is a module with its own page + JSON API
                 '<module:product|provider|user|level|history>' => '<module>/page/index',
                 // JSON API consumed by the Alpine.js frontend (fetch)

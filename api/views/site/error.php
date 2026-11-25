@@ -24,7 +24,8 @@ $this->title = '錯誤 - Anginger ERP';
 <div class="login-panel" style="min-height:100vh">
     <div class="login-card">
         <h1><?= Html::encode($this->title) ?></h1>
-        <p class="error"><?= Html::encode($exception->getMessage()) ?></p>
+        <?php $debug = defined('YII_DEBUG') && YII_DEBUG; ?>
+        <p class="error"><?= ($debug || $exception instanceof \yii\web\HttpException) ? Html::encode($exception->getMessage()) : '系統發生錯誤，請稍後再試。' ?></p>
         <p><a href="/">回到首頁</a></p>
     </div>
 </div>

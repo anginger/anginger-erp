@@ -1,7 +1,7 @@
 FROM composer:2 AS api-builder
 WORKDIR /build
 COPY ./api /build
-RUN composer install
+RUN composer install --no-interaction --no-progress
 
 FROM alpine:3.21
 RUN apk add --no-cache nginx php84 php84-fpm php84-pdo php84-ldap php84-pdo_sqlite php84-sqlite3 php84-mbstring php84-ctype php84-json php84-session php84-openssl php84-curl php84-fileinfo php84-xml php84-tokenizer supervisor
@@ -16,3 +16,5 @@ RUN chown -R nginx:nginx /app/api && chmod -R a+rX /app/api && mkdir -p /app/api
 WORKDIR /app
 EXPOSE 8888
 CMD ["sh", "-c", "su -s /bin/sh nginx -c \"php84 /app/api/console.php migrate --interactive=0\" && exec /usr/bin/supervisord -c /etc/supervisord.conf"]
+
+HEALTHCHECK --interval=30s --timeout=3s CMD php -r "exit(@file_get_contents('http://127.0.0.1:80/health') === false ? 1 : 0);"

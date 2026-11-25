@@ -20,12 +20,30 @@ namespace anginger\modules\level\controllers;
 use anginger\controllers\ResourceController;
 use anginger\models\Level;
 use yii\db\ActiveRecord;
+use anginger\models\User;
+use yii\web\Response;
+use Yii;
 
 /**
  * JSON API for permission levels, mounted under /api/level.
  */
 class ApiController extends ResourceController
 {
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        $identity = Yii::$app->user->identity;
+        if (!$identity instanceof User || !$identity->isAdmin()) {
+            Yii::$app->response->setStatusCode(403);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            Yii::$app->response->data = ['message' => 'forbidden'];
+            return false;
+        }
+        return true;
+    }
+
     protected function modelClass(): string
     {
         return Level::class;

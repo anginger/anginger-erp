@@ -203,8 +203,14 @@ td.empty::before {
 /* ---------- a11y & interaction ---------- */
 a, button, .ts-button, .ts-menu .item { touch-action: manipulation; }
 @media (prefers-reduced-motion: reduce) {
-  dialog.ts-modal[open] > .content { animation: none; }
+  dialog.ts-modal[open] > .content, .breathing-bar, .skel, .bubble.typing span { animation: none !important; }
+  .ts-button:active, .conv-item:active { transform: none !important; }
   * { scroll-behavior: auto; }
+}
+@media (max-width: 768px) {
+  .app-topbar { grid-template-columns: 1fr auto; row-gap: 0.4rem; }
+  .app-topbar .center { grid-column: 1 / -1; order: 3; overflow-x: auto; }
+  .app-main { padding-top: 1rem; }
 }
 
 /* ---------- ERP overview ---------- */

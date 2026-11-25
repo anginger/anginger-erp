@@ -32,6 +32,24 @@ $this->beginPage();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="<?= Html::encode(Yii::$app->request->csrfToken) ?>">
+    <script>
+    // Attach the CSRF token to every state-changing same-origin fetch().
+    (function () {
+        var orig = window.fetch.bind(window);
+        window.fetch = function (url, opts) {
+            opts = opts || {};
+            var m = (opts.method || 'GET').toUpperCase();
+            var sameOrigin = String(url).charAt(0) === '/' || String(url).indexOf(location.origin) === 0;
+            if (sameOrigin && m !== 'GET' && m !== 'HEAD') {
+                var meta = document.querySelector('meta[name="csrf-token"]');
+                if (meta) { opts.headers = Object.assign({ 'X-CSRF-Token': meta.content }, opts.headers || {}); }
+            }
+            return orig(url, opts);
+        };
+    })();
+    </script>
+
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f8">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#161616">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%235865F2'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23fff' font-family='sans-serif' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
@@ -72,7 +90,7 @@ $this->beginPage();
             <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
             <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
         </button>
-        <span class="user-chip"><span class="avatar"><?= Html::encode(mb_strtoupper(mb_substr($meName, 0, 1))) ?></span><?= Html::encode($meName) ?></span>
+        <span class="user-chip"><span class="avatar" aria-hidden="true"><?= Html::encode(mb_strtoupper(mb_substr($meName, 0, 1))) ?></span><?= Html::encode($meName) ?></span>
         <a class="ts-button is-icon is-ghost app-icon-btn" href="/site/logout" aria-label="登出" title="登出">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
         </a>
