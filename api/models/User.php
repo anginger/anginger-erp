@@ -79,18 +79,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds a user by username and plain-text password (port of
-     * `User::loadFromUsernameAndPassword`).
-     */
-    public static function findByUsernameAndPassword(string $username, string $password): ?User
-    {
-        return static::findOne([
-            'username' => $username,
-            'password' => \anginger\components\AuthService::hashPassword($password),
-        ]);
-    }
-
-    /**
      * The password hash must never leak into API responses
      * (same as the old `jsonSerialize()` which unset `password`).
      */

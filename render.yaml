@@ -9,9 +9,15 @@ services:
     plan: free
     autoDeploy: true
     envVars:
+      - key: YII_ENV
+        value: prod
+      - key: YII_DEBUG
+        value: "false"
+      - key: COOKIE_VALIDATION_KEY
+        generateValue: true
       # LDAP/AD (optional): set LDAP_ENABLED=true and the directory settings
       # - key: LDAP_ENABLED
       #   value: "false"
       # - key: LDAP_HOST
       #   sync: false
-  healthCheckPath: /health
+    healthCheckPath: /health

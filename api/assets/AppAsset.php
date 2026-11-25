@@ -31,7 +31,7 @@ class AppAsset extends AssetBundle
         'assets/vendor/tocas.min.css',
         'assets/app.css',
     ];
-    public $js = ['assets/alpine.min.js', 'assets/app-ui.js'];
+    public $js = ['assets/app-ui.js', 'assets/alpine.min.js']; // app-ui first: registers alpine:init hooks before Alpine auto-starts
     // Alpine 3.14 starts on a microtask as soon as its script runs; defer makes
     // it execute after classic end-of-body module scripts, so their
     // 'alpine:init' listeners are registered before Alpine dispatches the event.

@@ -24,6 +24,8 @@ use yii\helpers\Html;
 AppAsset::register($this);
 $path = Yii::$app->request->pathInfo;
 if ($path === 'site/index') { $path = ''; }
+$path = explode('/', $path)[0]; // 'account/page' -> 'account' so nav highlighting works
+if ($path === 'site') { $path = ''; }
 $me = Yii::$app->user->isGuest ? null : Yii::$app->user->identity;
 $meName = $me ? ($me->display_name ?? $me->username) : '';
 $this->beginPage();
@@ -76,17 +78,17 @@ $this->beginPage();
     </div>
     <div class="center">
         <nav class="ts-menu app-nav" aria-label="主選單">
-            <a class="item<?= $path === '' ? ' is-active' : '' ?>" href="/">總覽</a>
-            <a class="item<?= $path === 'product' ? ' is-active' : '' ?>" href="/product">產品</a>
-            <a class="item<?= $path === 'provider' ? ' is-active' : '' ?>" href="/provider">供應商</a>
-            <a class="item<?= $path === 'user' ? ' is-active' : '' ?>" href="/user">使用者</a>
-            <a class="item<?= $path === 'level' ? ' is-active' : '' ?>" href="/level">權限等級</a>
-            <a class="item<?= $path === 'history' ? ' is-active' : '' ?>" href="/history">操作紀錄</a>
+            <a class="item<?= $path === '' ? ' is-active' : '' ?>"<?= $path === '' ? ' aria-current="page"' : '' ?> href="/">總覽</a>
+            <a class="item<?= $path === 'product' ? ' is-active' : '' ?>"<?= $path === 'product' ? ' aria-current="page"' : '' ?> href="/product">產品</a>
+            <a class="item<?= $path === 'provider' ? ' is-active' : '' ?>"<?= $path === 'provider' ? ' aria-current="page"' : '' ?> href="/provider">供應商</a>
+            <a class="item<?= $path === 'user' ? ' is-active' : '' ?>"<?= $path === 'user' ? ' aria-current="page"' : '' ?> href="/user">使用者</a>
+            <a class="item<?= $path === 'level' ? ' is-active' : '' ?>"<?= $path === 'level' ? ' aria-current="page"' : '' ?> href="/level">權限等級</a>
+            <a class="item<?= $path === 'history' ? ' is-active' : '' ?>"<?= $path === 'history' ? ' aria-current="page"' : '' ?> href="/history">操作紀錄</a>
         </nav>
     </div>
     <div class="end">
         <?php if ($me): ?>
-        <button type="button" id="themeToggle" class="ts-button is-icon is-ghost app-icon-btn" aria-label="切換深色模式" title="切換深色模式">
+        <button type="button" id="themeToggle" class="ts-button is-icon is-ghost app-icon-btn" aria-pressed="false" aria-label="切換深色模式" title="切換深色模式">
             <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
             <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
         </button>
@@ -104,10 +106,12 @@ $this->beginPage();
 (function () {
     var b = document.getElementById('themeToggle');
     if (!b) return;
+    b.setAttribute('aria-pressed', document.documentElement.dataset.theme === 'dark' ? 'true' : 'false');
     b.addEventListener('click', function () {
         var r = document.documentElement;
         var n = r.dataset.theme === 'dark' ? 'light' : 'dark';
         r.dataset.theme = n;
+        b.setAttribute('aria-pressed', n === 'dark' ? 'true' : 'false');
         try { localStorage.setItem('anginger-theme', n); } catch (e) {}
     });
 })();
