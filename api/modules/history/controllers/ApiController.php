@@ -66,7 +66,7 @@ class ApiController extends BaseController
             return $this->forbidden();
         }
         $id = Yii::$app->request->getQueryParam('id');
-        if ($id === null || $id === '') {
+        if (!is_scalar($id) || $id === '') {
             return $this->badRequest();
         }
         $history = History::findOne(intval($id));

@@ -65,14 +65,23 @@
         }, 4000);
     };
 
-    // a11y for Alpine :open dialogs: Escape closes, opening focuses the first field.
-    document.addEventListener('keydown', function (e) {
-        if (e.key !== 'Escape') return;
-        document.querySelectorAll('dialog[open]').forEach(function (d) {
-            if (!d.classList.contains('ts-modal')) return;
-            d.removeAttribute('open'); // non-showModal dialogs need manual close
+    // x-modal="expr" on a <dialog>: true -> showModal() (native focus trap + Escape),
+    // false -> close(). Native close (Escape) fires 'modal-close' so the view can sync state.
+    document.addEventListener('alpine:init', function () {
+        Alpine.directive('modal', function (el, { expression }, { effect, evaluate }) {
+            if (el.tagName !== 'DIALOG') return;
+            el.addEventListener('close', function () {
+                el.dispatchEvent(new CustomEvent('modal-close', { bubbles: true }));
+            });
+            effect(function () {
+                var v = evaluate(expression);
+                if (v && !el.open) { try { el.showModal(); } catch (e) { el.setAttribute('open', ''); } }
+                else if (!v && el.open) { el.close(); }
+            });
         });
     });
+
+    // a11y: when any modal dialog opens, move focus to the first field.
     new MutationObserver(function (muts) {
         muts.forEach(function (m) {
             if (m.type === 'attributes' && m.attributeName === 'open') {

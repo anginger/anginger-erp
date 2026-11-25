@@ -74,7 +74,7 @@ class ApiController extends ResourceController
         }
         $form = Yii::$app->request->getBodyParams();
         $uuid = $form['uuid'] ?? null;
-        if ($uuid === null || $uuid === '' || !isset($form['archived'])) {
+        if (!is_scalar($uuid) || $uuid === '' || !isset($form['archived'])) {
             return $this->badRequest();
         }
         $user = User::findOne(strval($uuid));
