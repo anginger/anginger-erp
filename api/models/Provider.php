@@ -36,4 +36,15 @@ class Provider extends ActiveRecord
     {
         return 'providers';
     }
+
+    public function rules(): array
+    {
+        return [
+            [['display_name', 'contact_name', 'contact_phone', 'contact_address'], 'required'],
+            [['display_name'], 'string', 'max' => 50],
+            [['display_name'], 'unique'],
+            [['contact_name', 'contact_phone'], 'string', 'max' => 50],
+            [['contact_address'], 'string', 'max' => 255],
+        ];
+    }
 }

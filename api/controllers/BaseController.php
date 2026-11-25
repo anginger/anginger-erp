@@ -52,6 +52,17 @@ class BaseController extends Controller
         ];
     }
 
+    public function beforeAction($action): bool
+    {
+        // capture the identity now: actionLogout() clears it before afterAction() runs,
+        // and blocked requests never reach afterAction() at all
+        $identity = Yii::$app->user->identity;
+        if ($identity instanceof User) {
+            Yii::$app->params["history_user"] = $identity->uuid;
+        }
+        return parent::beforeAction($action);
+    }
+
     public function afterAction($action, $result): mixed
     {
         $this->logHistory();
@@ -64,6 +75,10 @@ class BaseController extends Controller
      */
     protected function logHistory(): void
     {
+        if (!empty(Yii::$app->params['history_logged'])) {
+            return; // already logged (denied in beforeAction, or denied inside the action)
+        }
+        Yii::$app->params['history_logged'] = true;
         try {
             $identity = Yii::$app->user->identity;
             $history = new History();
@@ -71,7 +86,7 @@ class BaseController extends Controller
             $history->user = Yii::$app->params['history_user'] ?? ($identity instanceof User ? $identity->uuid : (string)Yii::$app->request->userIP);
             $history->method = Yii::$app->request->method;
             $history->resource = Yii::$app->request->url;
-            $history->save(false);
+            $history->save();
         } catch (\Throwable $e) {
             Yii::error('Failed to write history: ' . $e->getMessage());
         }
@@ -86,6 +101,7 @@ class BaseController extends Controller
         if (!Yii::$app->user->isGuest) {
             return true;
         }
+        $this->logHistory();
         Yii::$app->response->setStatusCode(403);
         return false;
     }
@@ -99,6 +115,7 @@ class BaseController extends Controller
         if ($identity instanceof User && $identity->isAdmin()) {
             return true;
         }
+        $this->logHistory();
         Yii::$app->response->setStatusCode(403);
         return false;
     }

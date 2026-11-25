@@ -80,11 +80,6 @@ main { scroll-margin-top: 4.5rem; }
 :root[data-theme="dark"] .ic-sun { display: none; }
 :root:not([data-theme="dark"]) .ic-moon { display: none; }
 .user-chip { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--ts-gray-700); padding-right: 0.25rem; }
-.avatar {
-  width: 28px; height: 28px; border-radius: 50%; flex: none;
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--brand-100); color: var(--brand-700); font-weight: 700; font-size: 0.8rem;
-}
 .app-main { max-width: 1120px; padding-top: 1.75rem; padding-bottom: 2.5rem; }
 
 /* ---------- page head ---------- */
