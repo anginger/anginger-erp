@@ -25,5 +25,6 @@ class ProviderAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $js = ['assets/module-provider.js'];
+    public $jsOptions = ['position' => \yii\web\View::POS_END]; // classic end-of-body: runs before deferred Alpine start
     public $depends = [AppAsset::class];
 }

@@ -2,6 +2,13 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('userPage', () => ({
         items: window.__ITEMS__ || [],
+        q: '',
+        filtered() {
+            const q = (this.q || '').trim().toLowerCase();
+            const list = this.items || this.conversations || [];
+            if (!q) return list;
+            return list.filter(row => JSON.stringify(row).toLowerCase().includes(q));
+        },
         levels: window.__LEVELS__ || [],
         mode: 0,
         form: {},
@@ -23,7 +30,7 @@ document.addEventListener('alpine:init', () => {
         },
         async toggleArchive(u) {
             const archived = u.archived ? 0 : 1;
-            if (archived && !confirm('確定要封存「' + u.username + '」嗎？封存後無法登入（含 LDAP），且現有連線會被中斷。')) return;
+            if (archived && !(await appConfirm('確定要封存「' + u.username + '」嗎？封存後無法登入（含 LDAP），且現有連線會被中斷。'))) return;
             const r = await fetch('/api/user/archive', {
                 method: 'POST',
                 credentials: 'same-origin',
@@ -62,7 +69,7 @@ document.addEventListener('alpine:init', () => {
             this.message = d.message || '操作失敗';
         },
         async remove(u) {
-            if (!confirm('確定要刪除「' + u.username + '」嗎？')) return;
+            if (!(await appConfirm('確定要刪除「' + u.username + '」嗎？'))) return;
             const r = await fetch('/api/user?uuid=' + encodeURIComponent(u.uuid), {
                 method: 'DELETE',
                 credentials: 'same-origin'

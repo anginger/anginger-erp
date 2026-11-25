@@ -54,6 +54,14 @@ docker run -p 8888:8888 anginger-erp   # http://localhost:8888
 `LDAP_USER_FILTER`（AD: `(sAMAccountName=%s)`）、`LDAP_USERNAME_ATTRIBUTE`（AD: `sAMAccountName`）、
 `LDAP_STARTTLS`、`LDAP_TIMEOUT`。需要 PHP **ext-ldap**（Docker image 已內建 `php8-ldap`）。
 
+## Operational notes
+
+- Error codes: `401` 未登入、`403` 已登入但無權限（管理功能限 admin）、`423` 帳號已封存、`429` 登入嘗試過於頻繁（5 次 / 15 分鐘，鎖定後回 429）。
+- CSRF：所有會異動狀態的請求（POST/PUT/DELETE）需帶 `X-CSRF-Token` header（layout 已輸出 meta tag，`app-ui.js` 會自動為 fetch 注入），缺少時回 `400`。
+- `GET /health` 不需登入，回 `{"status":"ok"}`，供 Docker `HEALTHCHECK` 與 Render `healthCheckPath` 使用。
+- SQLite 為 WAL mode：備份請用 `sqlite3 api/database.sqlite ".backup backup.sqlite"`，或複製時一併複製 `database.sqlite-wal` / `-shm`（線上請先 `PRAGMA wal_checkpoint(TRUNCATE);`）。
+- 測試：`cd api && vendor/bin/phpunit`（unit tests，自動用暫存 SQLite 跑 migrate）；E2E smoke：`BASE=http://127.0.0.1:1270 api/tests/e2e.sh`（需先啟動 dev server）。
+- 正式環境請設定環境變數：`YII_ENV=prod`、`YII_DEBUG=false`、`COOKIE_VALIDATION_KEY`（隨機字串）、`DB_DSN` / `SQLITE_PATH`（預設 `api/database.sqlite`）。
 ## License
 
 [Apache 2.0 license](LICENSE)

@@ -25,6 +25,7 @@ ProviderAsset::register($this);
 ?>
 <div x-data="providerPage()">
     <div class="page-head">
+        <div class="ts-input app-search"><input type="search" placeholder="搜尋…" x-model="q" aria-label="搜尋列表"></div>
         <h1>供應商資料</h1>
         <button class="ts-button" @click="openCreate()">+ 新增供應商</button>
     </div>
@@ -34,7 +35,7 @@ ProviderAsset::register($this);
             <tr><th>名稱</th><th>聯絡人</th><th>電話</th><th>地址</th><th></th></tr>
             </thead>
             <tbody>
-            <template x-for="p in items" :key="p._id">
+            <template x-for="p in filtered" :key="p._id">
                 <tr>
                     <td x-text="p.display_name"></td>
                     <td x-text="p.contact_name"></td>
@@ -46,7 +47,7 @@ ProviderAsset::register($this);
                     </td>
                 </tr>
             </template>
-            <tr x-show="items.length === 0"><td colspan="5" class="empty">尚無資料</td></tr>
+            <tr x-show="filtered().length === 0"><td colspan="5" class="empty">尚無資料</td></tr>
             </tbody>
         </table>
     </div>
