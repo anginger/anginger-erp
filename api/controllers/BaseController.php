@@ -68,7 +68,7 @@ class BaseController extends Controller
             $identity = Yii::$app->user->identity;
             $history = new History();
             $history->created_time = time();
-            $history->user = $identity instanceof User ? $identity->uuid : (string)Yii::$app->request->userIP;
+            $history->user = Yii::$app->params['history_user'] ?? ($identity instanceof User ? $identity->uuid : (string)Yii::$app->request->userIP);
             $history->method = Yii::$app->request->method;
             $history->resource = Yii::$app->request->url;
             $history->save(false);
@@ -84,6 +84,19 @@ class BaseController extends Controller
     protected function requireLogin(): bool
     {
         if (!Yii::$app->user->isGuest) {
+            return true;
+        }
+        Yii::$app->response->setStatusCode(403);
+        return false;
+    }
+
+    /**
+     * A logged-in admin is required, otherwise 403.
+     */
+    protected function requireAdmin(): bool
+    {
+        $identity = Yii::$app->user->identity;
+        if ($identity instanceof User && $identity->isAdmin()) {
             return true;
         }
         Yii::$app->response->setStatusCode(403);

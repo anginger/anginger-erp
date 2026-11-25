@@ -32,7 +32,37 @@ class AuthService
     /**
      * @return array{0: ?User, 1: ?string} [user, error] — exactly one is set.
      */
-    public static function attempt(string $username, string $password): array
+        /**
+     * bcrypt/Argon2 hash via Yii security component.
+     */
+    public static function hashPassword(string $password): string
+    {
+        return Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Verify against the modern hash; legacy unsalted sha256 hashes still verify
+     * and are transparently re-hashed on success.
+     */
+    public static function validatePassword(User $user, string $password): bool
+    {
+        if ($user->password === null || $user->password === '') {
+            return false;
+        }
+        // validatePassword() throws on non-password_hash input; only call it for real hashes
+        if ((str_starts_with($user->password, '$2') || str_starts_with($user->password, '$argon'))
+            && Yii::$app->security->validatePassword($password, $user->password)) {
+            return true;
+        }
+        if ($user->password === hash('sha256', $password)) {
+            $user->password = self::hashPassword($password);
+            $user->save(false, ['password']);
+            return true;
+        }
+        return false;
+    }
+
+public static function attempt(string $username, string $password): array
     {
         $user = User::findOne(['username' => $username]);
 
@@ -43,7 +73,7 @@ class AuthService
 
         // 1. built-in account with a local password
         if ($user !== null && $user->auth_source === 'local'
-            && $user->password !== null && $user->password === hash('sha256', $password)) {
+            && $user->password !== null && self::validatePassword($user, $password)) {
             $user->last_login_time = time();
             $user->save(false, ['last_login_time']);
             return [$user, null];

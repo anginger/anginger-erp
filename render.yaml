@@ -14,3 +14,4 @@ services:
       #   value: "false"
       # - key: LDAP_HOST
       #   sync: false
+  healthCheckPath: /health

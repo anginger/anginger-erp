@@ -84,6 +84,6 @@ UserAsset::register($this);
     </dialog>
 </div>
 <script>
-    window.__ITEMS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($items)) ?>;
-    window.__LEVELS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($levels)) ?>;
+    window.__ITEMS__ = <?= \yii\helpers\Json::htmlEncode(\yii\helpers\ArrayHelper::toArray($items)) ?>;
+    window.__LEVELS__ = <?= \yii\helpers\Json::htmlEncode(\yii\helpers\ArrayHelper::toArray($levels)) ?>;
 </script>

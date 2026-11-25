@@ -49,7 +49,7 @@ $this->title = '總覽 - Anginger ERP';
     </table>
 </div>
 <script>
-window.__HISTORIES__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($histories)) ?>;
+window.__HISTORIES__ = <?= \yii\helpers\Json::htmlEncode(\yii\helpers\ArrayHelper::toArray($histories)) ?>;
 document.addEventListener('alpine:init', () => {
     Alpine.data('historyWidget', () => ({
         items: window.__HISTORIES__ || [],

@@ -20,12 +20,31 @@ namespace anginger\modules\provider\controllers;
 use anginger\controllers\ResourceController;
 use anginger\models\Provider;
 use yii\db\ActiveRecord;
+use anginger\models\User;
+use yii\web\Response;
+use Yii;
 
 /**
  * JSON API for providers, mounted under /api/provider.
  */
 class ApiController extends ResourceController
 {
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        $identity = Yii::$app->user->identity;
+        if (!$identity instanceof User || !$identity->isAdmin()) {
+            Yii::$app->response->setStatusCode(403);
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            Yii::$app->response->data = ['message' => 'forbidden'];
+            return false;
+        }
+        return true;
+    }
+
+
     protected function modelClass(): string
     {
         return Provider::class;

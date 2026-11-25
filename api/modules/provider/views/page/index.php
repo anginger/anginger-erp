@@ -66,4 +66,4 @@ ProviderAsset::register($this);
         </form>
     </dialog>
 </div>
-<script>window.__ITEMS__ = <?= json_encode(\yii\helpers\ArrayHelper::toArray($items)) ?>;</script>
+<script>window.__ITEMS__ = <?= \yii\helpers\Json::htmlEncode(\yii\helpers\ArrayHelper::toArray($items)) ?>;</script>

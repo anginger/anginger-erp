@@ -44,10 +44,8 @@ class AuthenticController extends BaseController
     public function actionLdap(): Response
     {
         $c = LdapClient::config();
-        return $this->asJson([
-            'enabled' => LdapClient::enabled(),
-            'host' => LdapClient::enabled() ? strval($c['host'] ?? '') : null,
-        ]);
+        unset($c); // never expose internal host/bind details
+        return $this->asJson(['enabled' => LdapClient::enabled()]);
     }
 
     public function actionSession(): Response
@@ -66,7 +64,18 @@ class AuthenticController extends BaseController
                 if (!isset($form['username']) || !isset($form['password'])) {
                     return $this->badRequest();
                 }
+                $cache = Yii::$app->cache;
+                $failKey = 'login-fail.' . preg_replace('/[^a-zA-Z0-9_.]/', '_', $request->userIP . '.' . strtolower(strval($form['username'])));
+                if ($cache !== null && (int)$cache->get($failKey) >= 5) {
+                    Yii::$app->response->setStatusCode(429);
+                    return $this->asJson(['message' => '嘗試次數過多，請 15 分鐘後再試']);
+                }
                 [$user, $error] = AuthService::attempt(strval($form['username']), strval($form['password']));
+                if ($user === null && $cache !== null) {
+                    $cache->set($failKey, ((int)$cache->get($failKey)) + 1, 900);
+                } elseif ($cache !== null) {
+                    $cache->delete($failKey);
+                }
                 if ($user === null) {
                     if ($error === AuthService::ERROR_ARCHIVED) {
                         Yii::$app->response->setStatusCode(423);

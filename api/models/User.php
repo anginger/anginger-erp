@@ -86,7 +86,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne([
             'username' => $username,
-            'password' => hash('sha256', $password),
+            'password' => \anginger\components\AuthService::hashPassword($password),
         ]);
     }
 
@@ -94,10 +94,17 @@ class User extends ActiveRecord implements IdentityInterface
      * The password hash must never leak into API responses
      * (same as the old `jsonSerialize()` which unset `password`).
      */
-    public function fields(): array
+        public function isAdmin(): bool
+    {
+        $level = Level::findOne($this->level);
+        return $level !== null && strcasecmp(strval($level->display_name), 'Admin') === 0;
+    }
+
+public function fields(): array
     {
         $fields = parent::fields();
         unset($fields['password']);
+        unset($fields['ldap_dn']);
         return $fields;
     }
 
